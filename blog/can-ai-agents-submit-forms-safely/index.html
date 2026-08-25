@@ -46,27 +46,20 @@
   }
   </script>
 </head>
-<body>
-
-  <!-- ============ ANNOUNCEMENT BAR ============ -->
-  <div class="announce">
+<body>  <!-- ============ ANNOUNCEMENT BAR ============ -->
+  <aside class="announce" aria-label="Announcement">
     <div class="container-wide announce-inner">
-      <span class="announce-chip mono">NEW</span>
-      <span class="announce-text">
-        AI agents now first-class:
-        <span class="mono announce-highlight">authorize · audit · revoke in one click</span>
-        — your agents submit cleanly, bots stay blocked.
-      </span>
-      <a href="/docs/agents" class="announce-cta">Read agent docs →</a>
+      <span class="announce-dot">🔴</span>
+      <span><strong class="announce-bold">GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</span>
     </div>
-  </div>
+  </aside>
 
   <!-- ============ NAVBAR ============ -->
-  <header class="nav">
+  <header class="nav" role="banner">
     <div class="container-wide nav-inner">
       <div class="nav-left">
         <a href="/" aria-label="ollastack" class="logo-lockup">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="logo-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="logo-mark">
             <rect x="2" y="2" width="20" height="20" rx="4" fill="#DA291C"></rect>
             <rect x="6" y="7" width="12" height="2" rx="1" fill="#ffffff"></rect>
             <rect x="6" y="11" width="12" height="2" rx="1" fill="#ffffff"></rect>
@@ -74,25 +67,19 @@
           </svg>
           <span class="wordmark">ollastack</span>
         </a>
-        <nav class="nav-links" aria-label="Primary">
-          <a href="/" class="nav-link">Product</a>
-          <a href="/use-cases" class="nav-link">Use cases</a>
-          <a href="/email-api" class="nav-link">Email API</a>
-          <a href="/docs" class="nav-link">Docs</a>
-          <a href="/docs/api" class="nav-link">API</a>
-          <a href="/resources" class="nav-link">Resources</a>
+        <nav class="nav-links" aria-label="Primary Navigation">
+          <a href="/#product" class="nav-link">Product ▾</a>
+          <a href="/#use-cases" class="nav-link">Use cases</a>
+          <a href="/#email-api" class="nav-link">Email API</a>
+          <a href="/#docs" class="nav-link">Docs</a>
+          <a href="/#resources" class="nav-link">Resources ▾</a>
           <a href="/blog" class="nav-link active">Blog</a>
-          <a href="/pricing" class="nav-link">Pricing</a>
+          <a href="/#pricing" class="nav-link">Pricing</a>
         </nav>
       </div>
       <div class="nav-right">
-        <a class="btn btn-ghost btn-sm nav-signin" href="https://login.ollastack.com/login">Sign in</a>
-        <a class="btn btn-primary btn-sm" href="https://login.ollastack.com/register">
-          Start free
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
-            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-        </a>
+        <a class="nav-signin" href="https://login.ollastack.com/login">Sign in</a>
+        <a class="btn-start-free" href="https://login.ollastack.com/register">Start free →</a>
         <button type="button" class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"></path>
@@ -103,16 +90,15 @@
 
     <!-- Mobile nav -->
     <nav class="nav-mobile" id="nav-mobile" aria-label="Mobile">
-      <a href="/" class="nav-mobile-link">Product</a>
-      <a href="/use-cases" class="nav-mobile-link">Use cases</a>
-      <a href="/email-api" class="nav-mobile-link">Email API</a>
-      <a href="/docs" class="nav-mobile-link">Docs</a>
-      <a href="/docs/api" class="nav-mobile-link">API</a>
-      <a href="/resources" class="nav-mobile-link">Resources</a>
+      <a href="/#product" class="nav-mobile-link">Product</a>
+      <a href="/#use-cases" class="nav-mobile-link">Use cases</a>
+      <a href="/#email-api" class="nav-mobile-link">Email API</a>
+      <a href="/#docs" class="nav-mobile-link">Docs</a>
+      <a href="/#resources" class="nav-mobile-link">Resources</a>
       <a href="/blog" class="nav-mobile-link active">Blog</a>
-      <a href="/pricing" class="nav-mobile-link">Pricing</a>
+      <a href="/#pricing" class="nav-mobile-link">Pricing</a>
       <a class="nav-mobile-link" href="https://login.ollastack.com/login">Sign in</a>
-      <a class="nav-mobile-cta btn btn-primary" href="https://login.ollastack.com/register">Start free</a>
+      <a class="btn-start-free" href="https://login.ollastack.com/register" style="justify-content:center;margin-top:8px;">Start free →</a>
     </nav>
   </header>
 
@@ -120,30 +106,109 @@
   <main class="article-shell">
     <div class="container-wide">
       
-      <!-- Breadcrumbs -->
-      <nav class="breadcrumbs mono" aria-label="Breadcrumb">
-        <a href="/blog">/ blog</a>
-        <span>/</span>
-        <span>can-ai-agents-submit-forms-safely</span>
-      </nav>
+      <!-- 3-Column Layout: Left (TOC), Center (Article), Right (Promo Card) -->
+      <div class="article-3col-grid">
 
-      <!-- Article Header -->
-      <header class="article-header">
-        <div class="article-meta mono">
-          <time datetime="2026-08-21">August 21, 2026</time>
-          <span>·</span>
-          <span>21 min read</span>
-        </div>
-        <h1 class="article-title">Can AI Agents Submit Forms Safely? Here's What Developers Need to Know</h1>
-        <p class="article-description">
-          AI agents are filling out and submitting forms on behalf of humans at scale. Here's what "safe" actually means for that traffic, where it breaks, and how to build (or choose) a form backend that handles it properly.
-        </p>
-      </header>
+        <!-- Left Column: Back Button + Sticky Red TOC Card -->
+        <aside class="left-sidebar">
+          <a href="/blog" class="back-pill mono">
+            ‹ ALL POSTS
+          </a>
 
-      <!-- Article Body Grid with Sticky Sidebar -->
-      <div class="article-body-grid">
-        
+          <!-- Table of Contents Red Card -->
+          <div class="toc-sidebar">
+            <div class="toc-header">
+              <div class="toc-header-left">
+                <svg class="toc-header-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+                <span class="toc-title">ON THIS PAGE</span>
+              </div>
+              <span class="toc-badge">14 sections</span>
+            </div>
+            <div class="toc-body">
+              <nav class="toc-list" aria-label="Table of contents">
+                <a href="#the-short-answer" class="toc-link">
+                  <span class="toc-num">01</span>
+                  <span class="toc-text">The short answer</span>
+                </a>
+                <a href="#why-this-question-exists-now" class="toc-link">
+                  <span class="toc-num">02</span>
+                  <span class="toc-text">Why this question exists now</span>
+                </a>
+                <a href="#what-safe-actually-breaks-down-into" class="toc-link">
+                  <span class="toc-num">03</span>
+                  <span class="toc-text">What "safe" actually means</span>
+                </a>
+                <a href="#the-risks-concretely" class="toc-link">
+                  <span class="toc-num">04</span>
+                  <span class="toc-text">The risks, concretely</span>
+                </a>
+                <a href="#why-the-human-era-defenses-dont-transfer" class="toc-link">
+                  <span class="toc-num">05</span>
+                  <span class="toc-text">Why human defenses don't transfer</span>
+                </a>
+                <a href="#what-submitting-safely-actually-looks-like" class="toc-link">
+                  <span class="toc-num">06</span>
+                  <span class="toc-text">What submitting safely looks like</span>
+                </a>
+                <a href="#api-first-vs-browser-driven" class="toc-link">
+                  <span class="toc-num">07</span>
+                  <span class="toc-text">API-first vs. browser-driven</span>
+                </a>
+                <a href="#a-worked-example" class="toc-link">
+                  <span class="toc-num">08</span>
+                  <span class="toc-text">A worked example</span>
+                </a>
+                <a href="#what-happens-after-the-submission" class="toc-link">
+                  <span class="toc-num">09</span>
+                  <span class="toc-text">What happens after submission</span>
+                </a>
+                <a href="#testing-this-before-its-live" class="toc-link">
+                  <span class="toc-num">10</span>
+                  <span class="toc-text">Testing before it's live</span>
+                </a>
+                <a href="#a-checklist-for-developers" class="toc-link">
+                  <span class="toc-num">11</span>
+                  <span class="toc-text">A checklist for developers</span>
+                </a>
+                <a href="#common-mistakes-worth-calling-out" class="toc-link">
+                  <span class="toc-num">12</span>
+                  <span class="toc-text">Common mistakes worth calling out</span>
+                </a>
+                <a href="#the-bigger-picture" class="toc-link">
+                  <span class="toc-num">13</span>
+                  <span class="toc-text">The bigger picture</span>
+                </a>
+                <a href="#frequently-asked-questions" class="toc-link">
+                  <span class="toc-num">14</span>
+                  <span class="toc-text">Frequently asked questions</span>
+                </a>
+              </nav>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center Column: Article Content -->
         <article class="article-content">
+          
+          <!-- Article Header -->
+          <header class="article-header">
+            <div class="article-meta mono">
+              <span>August 21, 2026</span>
+              <span>·</span>
+              <span>21 min read</span>
+            </div>
+            <h1 class="article-title">Can AI Agents Submit Forms Safely? Here's What Developers Need to Know</h1>
+            <p class="article-lede">
+              AI agents are already filling out forms, submitting applications, and triggering workflows. Here is how to let legitimate AI agents submit your forms safely without opening the floodgates to spam and bot attacks.
+            </p>
+          </header>
           
           <p>
             Somewhere in the last eighteen months, the web quietly picked up a new kind of visitor. Not a person with a mouse, not a scraper harvesting product prices, but something in between — an AI agent that reads a page, understands a form, decides what to type into each field, and clicks submit. It might be booking a demo call for someone in a Slack thread. It might be requesting ten vendor quotes in parallel so a procurement manager doesn't have to. It might be an internal script re-testing your signup flow every night at 2 a.m. so a human doesn't have to catch the bug in the morning.
@@ -171,6 +236,42 @@
               <li><strong>Use APIs to make agent submissions reliable and secure.</strong></li>
             </ul>
           </div>
+
+          <!-- In-Article On This Page Section (Matching Red Photo Card Design) -->
+          <nav class="inpage-toc" aria-label="Article sections">
+            <div class="inpage-toc-header">
+              <div class="inpage-toc-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+                <span>ON THIS PAGE</span>
+              </div>
+              <span class="toc-badge">14 sections</span>
+            </div>
+            <div class="inpage-toc-body">
+              <ul class="inpage-toc-grid">
+                <li><a href="#the-short-answer"><span class="toc-num">01</span><span>The short answer</span></a></li>
+                <li><a href="#why-this-question-exists-now"><span class="toc-num">02</span><span>Why this question exists now</span></a></li>
+                <li><a href="#what-safe-actually-breaks-down-into"><span class="toc-num">03</span><span>What "safe" actually means</span></a></li>
+                <li><a href="#the-risks-concretely"><span class="toc-num">04</span><span>The risks, concretely</span></a></li>
+                <li><a href="#why-the-human-era-defenses-dont-transfer"><span class="toc-num">05</span><span>Why human defenses don't transfer</span></a></li>
+                <li><a href="#what-submitting-safely-actually-looks-like"><span class="toc-num">06</span><span>What submitting safely looks like</span></a></li>
+                <li><a href="#api-first-vs-browser-driven"><span class="toc-num">07</span><span>API-first vs. browser-driven</span></a></li>
+                <li><a href="#a-worked-example"><span class="toc-num">08</span><span>A worked example</span></a></li>
+                <li><a href="#what-happens-after-the-submission"><span class="toc-num">09</span><span>What happens after submission</span></a></li>
+                <li><a href="#testing-this-before-its-live"><span class="toc-num">10</span><span>Testing before it's live</span></a></li>
+                <li><a href="#a-checklist-for-developers"><span class="toc-num">11</span><span>A checklist for developers</span></a></li>
+                <li><a href="#common-mistakes-worth-calling-out"><span class="toc-num">12</span><span>Common mistakes worth calling out</span></a></li>
+                <li><a href="#the-bigger-picture"><span class="toc-num">13</span><span>The bigger picture</span></a></li>
+                <li><a href="#frequently-asked-questions"><span class="toc-num">14</span><span>Frequently asked questions</span></a></li>
+              </ul>
+            </div>
+          </nav>
 
           <h2 id="the-short-answer">The short answer</h2>
           <p>
@@ -530,25 +631,14 @@ curl -X POST https://login.ollastack.com/api/forms/frm_.../agents \
 
         </article>
 
-        <!-- Table of Contents Sticky Sidebar -->
-        <aside class="toc-sidebar">
-          <div class="toc-title mono">ON THIS PAGE</div>
-          <nav class="toc-list" aria-label="Table of contents">
-            <a href="#the-short-answer" class="toc-link">The short answer</a>
-            <a href="#why-this-question-exists-now" class="toc-link">Why this question exists now</a>
-            <a href="#what-safe-actually-breaks-down-into" class="toc-link">What "safe" actually breaks down into</a>
-            <a href="#the-risks-concretely" class="toc-link">The risks, concretely</a>
-            <a href="#why-the-human-era-defenses-dont-transfer" class="toc-link">Why human defenses don't transfer</a>
-            <a href="#what-submitting-safely-actually-looks-like" class="toc-link">What submitting safely looks like</a>
-            <a href="#api-first-vs-browser-driven" class="toc-link">API-first vs. browser-driven</a>
-            <a href="#a-worked-example" class="toc-link">A worked example</a>
-            <a href="#what-happens-after-the-submission" class="toc-link">What happens after submission</a>
-            <a href="#testing-this-before-its-live" class="toc-link">Testing before it's live</a>
-            <a href="#a-checklist-for-developers" class="toc-link">A checklist for developers</a>
-            <a href="#common-mistakes-worth-calling-out" class="toc-link">Common mistakes worth calling out</a>
-            <a href="#the-bigger-picture" class="toc-link">The bigger picture</a>
-            <a href="#frequently-asked-questions" class="toc-link">Frequently asked questions</a>
-          </nav>
+        <!-- Right Column: Ollastack Promo Card (Matching Screenshot) -->
+        <aside class="right-sidebar">
+          <div class="sidebar-promo-card">
+            <div class="promo-brand mono">OLLASTACK</div>
+            <p class="promo-desc">A form backend built for developers — and the agents increasingly submitting on their behalf.</p>
+            <a href="https://login.ollastack.com/register" class="btn-promo">Start free →</a>
+            <div class="promo-meta mono">No credit card · 50 submissions/mo</div>
+          </div>
         </aside>
 
       </div>

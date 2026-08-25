@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Build a Form Backend for a Static Site Without Writing a Server — Ollastack</title>
+  <meta name="description" content="You don't need Express, a database, or a $5/month droplet just to catch a contact form. Here's exactly how to give a static site a real form backend — spam filtering, notifications, webhooks and all — without writing a line of server code.">
+  <link rel="canonical" href="https://ollastack.com/blog/how-to-build-a-form-backend-for-a-static-site-without-writing-a-server">
+  
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:title" content="How to Build a Form Backend for a Static Site Without Writing a Server">
+  <meta property="og:description" content="You don't need Express, a database, or a $5/month droplet just to catch a contact form. Here's exactly how to give a static site a real form backend without writing a line of server code.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://ollastack.com/blog/how-to-build-a-form-backend-for-a-static-site-without-writing-a-server">
+  <meta property="og:image" content="https://ollastack.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Build a Form Backend for a Static Site Without Writing a Server">
+  <meta name="twitter:description" content="You don't need Express, a database, or a $5/month droplet just to catch a contact form. Here's how to give a static site a real form backend.">
+  <meta name="twitter:image" content="https://ollastack.com/og.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+
+  <!-- Structured Data JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "How to Build a Form Backend for a Static Site Without Writing a Server",
+    "description": "You don't need Express, a database, or a $5/month droplet just to catch a contact form. Here's exactly how to give a static site a real form backend — spam filtering, notifications, webhooks and all — without writing a line of server code.",
+    "datePublished": "2026-08-24",
+    "author": {
+      "@type": "Organization",
+      "name": "Ollastack"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Ollastack",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://ollastack.com/favicon.svg"
+      }
+    }
+  }
+  </script>
+</head>
+  <aside class="announce" aria-label="Announcement">
+    <div class="container-wide announce-inner">
+      <span class="announce-dot">🔴</span>
+      <span><strong class="announce-bold">GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</span>
+    </div>
+  </aside>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="nav" role="banner">
+    <div class="container-wide nav-inner">
+      <div class="nav-left">
+        <a href="/" aria-label="ollastack" class="logo-lockup">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="logo-mark">
+            <rect x="2" y="2" width="20" height="20" rx="4" fill="#DA291C"></rect>
+            <rect x="6" y="7" width="12" height="2" rx="1" fill="#ffffff"></rect>
+            <rect x="6" y="11" width="12" height="2" rx="1" fill="#ffffff"></rect>
+            <rect x="6" y="15" width="12" height="2" rx="1" fill="#ffffff"></rect>
+          </svg>
+          <span class="wordmark">ollastack</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary Navigation">
+          <a href="/#product" class="nav-link">Product ▾</a>
+          <a href="/#use-cases" class="nav-link">Use cases</a>
+          <a href="/#email-api" class="nav-link">Email API</a>
+          <a href="/#docs" class="nav-link">Docs</a>
+          <a href="/#resources" class="nav-link">Resources ▾</a>
+          <a href="/blog" class="nav-link active">Blog</a>
+          <a href="/#pricing" class="nav-link">Pricing</a>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <a class="nav-signin" href="https://login.ollastack.com/login">Sign in</a>
+        <a class="btn-start-free" href="https://login.ollastack.com/register">Start free →</a>
+        <button type="button" class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile nav -->
+    <nav class="nav-mobile" id="nav-mobile" aria-label="Mobile">
+      <a href="/#product" class="nav-mobile-link">Product</a>
+      <a href="/#use-cases" class="nav-mobile-link">Use cases</a>
+      <a href="/#email-api" class="nav-mobile-link">Email API</a>
+      <a href="/#docs" class="nav-mobile-link">Docs</a>
+      <a href="/#resources" class="nav-mobile-link">Resources</a>
+      <a href="/blog" class="nav-mobile-link active">Blog</a>
+      <a href="/#pricing" class="nav-mobile-link">Pricing</a>
+      <a class="nav-mobile-link" href="https://login.ollastack.com/login">Sign in</a>
+      <a class="btn-start-free" href="https://login.ollastack.com/register" style="justify-content:center;margin-top:8px;">Start free →</a>
+    </nav>
+  </header>
+
+  <!-- ============ ARTICLE MAIN CONTENT ============ -->
+  <main class="article-shell">
+    <div class="container-wide">
+      
+      <!-- 3-Column Layout: Left (TOC), Center (Article), Right (Promo Card) -->
+      <div class="article-3col-grid">
+
+        <!-- Left Column: Back Button + Sticky Red TOC Card -->
+        <aside class="left-sidebar">
+          <a href="/blog" class="back-pill mono">
+            ‹ ALL POSTS
+          </a>
+
+          <!-- Table of Contents Red Card -->
+          <div class="toc-sidebar">
+            <div class="toc-header">
+              <div class="toc-header-left">
+                <svg class="toc-header-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+                <span class="toc-title">ON THIS PAGE</span>
+              </div>
+              <span class="toc-badge">16 sections</span>
+            </div>
+            <div class="toc-body">
+              <nav class="toc-list" aria-label="Table of contents">
+                <a href="#why-static-sites-cant-handle-forms" class="toc-link">
+                  <span class="toc-num">01</span>
+                  <span class="toc-text">Why static sites can't handle forms</span>
+                </a>
+                <a href="#what-a-hosted-form-backend-is" class="toc-link">
+                  <span class="toc-num">02</span>
+                  <span class="toc-text">What a hosted backend actually is</span>
+                </a>
+                <a href="#the-five-minute-version" class="toc-link">
+                  <span class="toc-num">03</span>
+                  <span class="toc-text">The five-minute version</span>
+                </a>
+                <a href="#field-conventions-worth-knowing" class="toc-link">
+                  <span class="toc-num">04</span>
+                  <span class="toc-text">Field conventions worth knowing</span>
+                </a>
+                <a href="#spam-handling-pipeline" class="toc-link">
+                  <span class="toc-num">05</span>
+                  <span class="toc-text">Spam defense pipeline</span>
+                </a>
+                <a href="#notifications-setup" class="toc-link">
+                  <span class="toc-num">06</span>
+                  <span class="toc-text">Notifications setup</span>
+                </a>
+                <a href="#webhooks-integration" class="toc-link">
+                  <span class="toc-num">07</span>
+                  <span class="toc-text">Webhooks &amp; signatures</span>
+                </a>
+                <a href="#file-uploads-without-server" class="toc-link">
+                  <span class="toc-num">08</span>
+                  <span class="toc-text">File uploads without a server</span>
+                </a>
+                <a href="#forms-submitted-by-ai-agents" class="toc-link">
+                  <span class="toc-num">09</span>
+                  <span class="toc-text">AI agents submitting forms</span>
+                </a>
+                <a href="#cors-and-security-basics" class="toc-link">
+                  <span class="toc-num">10</span>
+                  <span class="toc-text">CORS &amp; security basics</span>
+                </a>
+                <a href="#multi-step-forms-and-redirects" class="toc-link">
+                  <span class="toc-num">11</span>
+                  <span class="toc-text">Multi-step &amp; custom redirects</span>
+                </a>
+                <a href="#testing-before-you-trust-it" class="toc-link">
+                  <span class="toc-num">12</span>
+                  <span class="toc-text">Testing before you trust it</span>
+                </a>
+                <a href="#a-complete-worked-example" class="toc-link">
+                  <span class="toc-num">13</span>
+                  <span class="toc-text">A complete worked example</span>
+                </a>
+                <a href="#when-you-need-a-real-server" class="toc-link">
+                  <span class="toc-num">14</span>
+                  <span class="toc-text">When you need a real server</span>
+                </a>
+                <a href="#the-bigger-picture" class="toc-link">
+                  <span class="toc-num">15</span>
+                  <span class="toc-text">The bigger picture</span>
+                </a>
+                <a href="#frequently-asked-questions" class="toc-link">
+                  <span class="toc-num">16</span>
+                  <span class="toc-text">Frequently asked questions</span>
+                </a>
+              </nav>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center Column: Article Content -->
+        <article class="article-content">
+          
+          <!-- Article Header -->
+          <header class="article-header">
+            <div class="article-meta mono">
+              <span>August 24, 2026</span>
+              <span>·</span>
+              <span>21 min read</span>
+            </div>
+            <h1 class="article-title">How to Build a Form Backend for a Static Site Without Writing a Server</h1>
+            <p class="article-lede">
+              You don't need Express, a database, or a $5/month droplet just to catch a contact form. Here's exactly how to give a static site a real form backend — spam filtering, notifications, webhooks and all — without writing a line of server code.
+            </p>
+          </header>
+          
+          <p>
+            Here's a scene that plays out a hundred times a day, on every corner of the web. Someone builds a beautiful, fast, static site — Hugo, Astro, Eleventy, plain HTML, doesn't matter which — and it's <em>great</em>. Pages load in a blink. There's no database to patch, no server to reboot at 2 a.m., no dependency-update Tuesday. Then they get to the contact page, or the newsletter signup, or the "request a demo" form, and they hit a wall: <code>&lt;form&gt;</code> tags need somewhere to send their data, and a static site, by definition, has nowhere for that data to go.
+          </p>
+          <p>
+            The instinctive fix is to spin up a tiny backend. A Node script. A Python function. Maybe a whole Express app with a database table just for messages. And that's where a lot of otherwise-sensible developers lose an afternoon (or a weekend) building infrastructure to solve what is, fundamentally, a five-minute problem.
+          </p>
+          <p>
+            This guide is about the other way: treating "form backend" as a solved problem you can plug into with <a href="https://ollastack.com">Ollastack</a>, the same way you'd plug into a CDN instead of writing your own edge network. We'll cover why static sites can't handle forms on their own, what a hosted form backend actually does under the hood, how to wire one up in minutes, and — because this is the part most tutorials skip — how to handle spam, notifications, webhooks, file uploads, and even AI agents submitting your forms, all without touching a server.
+          </p>
+
+          <!-- Key Takeaways Callout -->
+          <div class="takeaways-box">
+            <h3 class="takeaways-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              Key Takeaways
+            </h3>
+            <ul class="takeaways-list">
+              <li><strong>Static sites lack runtimes:</strong> Forms require an active server endpoint listening for POST requests to validate and store data.</li>
+              <li><strong>Hosted backends bridge the gap:</strong> Plug in an <a href="https://ollastack.com">Ollastack endpoint</a> via the standard <code>&lt;form action="..."&gt;</code> attribute or <code>fetch()</code>.</li>
+              <li><strong>Layered spam defense is critical:</strong> Honeypots (<code>_gotcha</code>), origin checks, link detection, and ML filters quarantine suspicious traffic instead of deleting real leads.</li>
+              <li><strong>Zero-code file uploads:</strong> Multipart form uploads handle resumes and attachments without S3 buckets or signed URLs.</li>
+              <li><strong>Automate downstream with webhooks:</strong> Deliver structured payloads to CRMs, Slack, or databases with HMAC signature verification.</li>
+              <li><strong>First-class AI agent support:</strong> Scoped API tokens allow CI test suites and autonomous agents to submit cleanly without getting blocked by anti-bot rules.</li>
+            </ul>
+          </div>
+
+          <!-- In-Article On This Page Section (Matching Red Photo Card Design) -->
+          <nav class="inpage-toc" aria-label="Article sections">
+            <div class="inpage-toc-header">
+              <div class="inpage-toc-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+                <span>ON THIS PAGE</span>
+              </div>
+              <span class="toc-badge">16 sections</span>
+            </div>
+            <div class="inpage-toc-body">
+              <ul class="inpage-toc-grid">
+                <li><a href="#why-static-sites-cant-handle-forms"><span class="toc-num">01</span><span>Why static sites can't handle forms</span></a></li>
+                <li><a href="#what-a-hosted-form-backend-is"><span class="toc-num">02</span><span>What a hosted backend actually is</span></a></li>
+                <li><a href="#the-five-minute-version"><span class="toc-num">03</span><span>The five-minute version</span></a></li>
+                <li><a href="#field-conventions-worth-knowing"><span class="toc-num">04</span><span>Field conventions worth knowing</span></a></li>
+                <li><a href="#spam-handling-pipeline"><span class="toc-num">05</span><span>Spam defense pipeline</span></a></li>
+                <li><a href="#notifications-setup"><span class="toc-num">06</span><span>Notifications setup</span></a></li>
+                <li><a href="#webhooks-integration"><span class="toc-num">07</span><span>Webhooks &amp; signatures</span></a></li>
+                <li><a href="#file-uploads-without-server"><span class="toc-num">08</span><span>File uploads without a server</span></a></li>
+                <li><a href="#forms-submitted-by-ai-agents"><span class="toc-num">09</span><span>AI agents submitting forms</span></a></li>
+                <li><a href="#cors-and-security-basics"><span class="toc-num">10</span><span>CORS &amp; security basics</span></a></li>
+                <li><a href="#multi-step-forms-and-redirects"><span class="toc-num">11</span><span>Multi-step &amp; custom redirects</span></a></li>
+                <li><a href="#testing-before-you-trust-it"><span class="toc-num">12</span><span>Testing before you trust it</span></a></li>
+                <li><a href="#a-complete-worked-example"><span class="toc-num">13</span><span>A complete worked example</span></a></li>
+                <li><a href="#when-you-need-a-real-server"><span class="toc-num">14</span><span>When you need a real server</span></a></li>
+                <li><a href="#the-bigger-picture"><span class="toc-num">15</span><span>The bigger picture</span></a></li>
+                <li><a href="#frequently-asked-questions"><span class="toc-num">16</span><span>Frequently asked questions</span></a></li>
+              </ul>
+            </div>
+          </nav>
+
+          <h2 id="why-static-sites-cant-handle-forms">Why a static site can't handle a form by itself</h2>
+          <p>
+            It's worth being precise about <em>why</em> this problem exists, because the answer shapes every decision that follows.
+          </p>
+          <p>
+            A static site is, at its core, a folder of files — HTML, CSS, JS, images — served exactly as they are. There's no runtime attached to it. When a browser loads <code>index.html</code>, nothing on the hosting side is "listening" for anything; it just hands over bytes. That's the entire reason static hosting is so fast and so cheap: there's no application server evaluating requests, no process to keep warm, nothing to scale.
+          </p>
+          <p>
+            A <code>&lt;form&gt;</code> element, on the other hand, is designed around the assumption that <em>something</em> is listening at the URL in its <code>action</code> attribute. When you click submit, the browser bundles up the field values and either navigates to that URL with the data in the query string (GET) or sends it as the request body (POST). Either way, it expects a response — ideally a 200 or a 302 redirect, not a 404 because nothing at that address knows what to do with a POST request.
+          </p>
+          <p>
+            So the mismatch is structural: forms assume a backend exists; static hosting guarantees one doesn't. You have exactly three ways to close that gap:
+          </p>
+          <ol>
+            <li>
+              <strong>Write and run your own backend</strong> — a small API route, hosted somewhere with a runtime (a VPS, a serverless function you deploy yourself, a container). You own the code, the uptime, the security patches, and the 2 a.m. pager.
+            </li>
+            <li>
+              <strong>Use your static host's built-in form handling</strong>, if it has one — some platforms intercept form submissions at build time and store them for you. Convenient, but you're locked to that host and the feature set is usually thin.
+            </li>
+            <li>
+              <strong>Point the form at a dedicated form-backend service like <a href="https://ollastack.com">Ollastack</a></strong> — a hosted endpoint built specifically to receive form submissions, whose entire job is being the "something" that's listening. This is the option this guide is about.
+            </li>
+          </ol>
+          <p>
+            Option 1 isn't hard exactly, it's just <em>disproportionate</em>. A form endpoint needs, at minimum: input validation, spam filtering, an email notification pipeline (which means dealing with SMTP, DKIM, SPF, and deliverability — a whole discipline on its own), some place to store submissions so you don't lose one if your inbox rule misfires, and ideally a way to see what happened when something goes wrong. That's a real, maintainable service — for a contact form. Most teams that go down this road either under-build it (no spam filtering, submissions vanish into a Gmail label nobody checks) or over-build it (a whole admin panel for twelve messages a month).
+          </p>
+
+          <h2 id="what-a-hosted-form-backend-is">What a hosted form backend actually is</h2>
+          <p>
+            Strip away the marketing language and a "form backend as a service" is refreshingly simple: it's a URL that accepts a POST request, does something useful with the payload, and gives you a response. The "something useful" is where all the value lives:
+          </p>
+          <ul>
+            <li>It validates and stores the submission so nothing is lost.</li>
+            <li>It filters spam using a layered pipeline (more on this below) so your inbox stays a leads list, not a junk drawer.</li>
+            <li>It sends you a notification — email, and often a webhook — the moment a real submission arrives.</li>
+            <li>It returns a sane response to the browser, either JSON for a JS-driven form or a redirect for a classic HTML one.</li>
+          </ul>
+          <p>
+            Because this is <em>all</em> the service does, it can do it well. Deliverability, spam classification, and retry logic for webhooks are each their own hard problems, and a dedicated form backend has usually solved them at a scale a single team's side project never will.
+          </p>
+          <p>
+            With <a href="https://ollastack.com">Ollastack</a>, the shape of the integration is nearly identical everywhere: you create a form in the <a href="https://login.ollastack.com/register">Ollastack dashboard</a>, you get an endpoint URL, you point your <code>&lt;form action=""&gt;</code> at it, done. If you're comparing options or migrating from an older setup, the <a href="https://ollastack.com/resources/migration-hub/">Ollastack migration hub</a> has a rundown of how to transition smoothly without downtime.
+          </p>
+
+          <h2 id="the-five-minute-version">The five-minute version</h2>
+          <p>
+            Let's do the simplest possible version first, because it really is this short. Say you've got a static contact page with this form:
+          </p>
+          <pre class="code"><code>&lt;form action="#" method="POST"&gt;
+  &lt;label&gt;Name &lt;input name="name" required /&gt;&lt;/label&gt;
+  &lt;label&gt;Email &lt;input name="email" type="email" required /&gt;&lt;/label&gt;
+  &lt;label&gt;Message &lt;textarea name="message" required&gt;&lt;/textarea&gt;&lt;/label&gt;
+  &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          <p>
+            Right now, that <code>action="#"</code> goes nowhere. Sign up for a form backend, create a form in its dashboard, and you'll get an endpoint that looks something like:
+          </p>
+          <pre class="code"><code>https://login.ollastack.com/api/submit/your-slug</code></pre>
+          <p>
+            Swap it in:
+          </p>
+          <pre class="code"><code>&lt;form action="https://login.ollastack.com/api/submit/your-slug" method="POST"&gt;
+  &lt;label&gt;Name &lt;input name="name" required /&gt;&lt;/label&gt;
+  &lt;label&gt;Email &lt;input name="email" type="email" required /&gt;&lt;/label&gt;
+  &lt;label&gt;Message &lt;textarea name="message" required&gt;&lt;/textarea&gt;&lt;/label&gt;
+  &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          <p>
+            That's it. That single-line change is the entire "backend" for your form. Submit it, and the service receives the name, email, and message fields, checks them against its spam pipeline, stores the submission, and emails you a notification. No server, no deploy, no database migration.
+          </p>
+          <p>
+            If you'd rather submit via JavaScript — say, to show an inline success message instead of navigating away — the same endpoint happily accepts a <code>fetch()</code> call with a JSON body:
+          </p>
+          <pre class="code"><code>async function handleSubmit(event) {
+  event.preventDefault();
+  const form = event.target;
+  const payload = Object.fromEntries(new FormData(form));
+
+  const response = await fetch(
+    "https://login.ollastack.com/api/submit/your-slug",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    // { success: true, id: "sub_...", next: null }
+    form.reset();
+    showSuccessMessage();
+  } else {
+    showErrorMessage();
+  }
+}</code></pre>
+          <p>
+            Notice what <em>didn't</em> happen anywhere in that snippet: no API key baked into client-side JavaScript, no CORS server you had to configure, no database schema. The endpoint accepts <code>application/json</code>, <code>application/x-www-form-urlencoded</code>, and <code>multipart/form-data</code> interchangeably, so a plain <code>&lt;form&gt;</code> and a hand-rolled <code>fetch()</code> both work against the exact same URL without any translation layer on your end.
+          </p>
+
+          <h2 id="field-conventions-worth-knowing">Field conventions worth knowing</h2>
+          <p>
+            Most hosted form backends share a set of "magic" field-name conventions, inherited from the earliest players in this space and carried forward because there's no reason to reinvent them. Knowing them saves you from writing custom logic for things the endpoint already does:
+          </p>
+          
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>You want</th>
+                  <th>Field name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Reply-To on the notification email</td>
+                  <td><code>_replyto</code> or an <code>email</code> field</td>
+                </tr>
+                <tr>
+                  <td>Override the notification subject line</td>
+                  <td><code>_subject</code></td>
+                </tr>
+                <tr>
+                  <td>Redirect to a custom "thank you" page</td>
+                  <td><code>_next</code></td>
+                </tr>
+                <tr>
+                  <td>A honeypot trap for bots</td>
+                  <td><code>_gotcha</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            A quick and important caveat on the redirect field: a well-built backend will only honor <code>_next</code> if it points to an origin you've explicitly allowed for that form. Otherwise, anyone could submit your form with a <code>_next</code> value pointing at a phishing page and use your legitimate form endpoint as an open redirect. If a service lets you set <code>_next</code> to <em>anything</em> with no allow-list, that's a sign its security model hasn't been thought through — worth checking before you commit to it.
+          </p>
+          <p>
+            One deliberate restriction you'll run into on well-designed platforms: fields like <code>_cc</code> and <code>_bcc</code> generally aren't honored from the public payload, even though <code>_replyto</code> and <code>_subject</code> are. The reasoning is straightforward — if an anonymous visitor could set arbitrary CC/BCC recipients on your notification email, your public contact form becomes a free email relay for spammers, who will absolutely find and abuse it within days of your site going live. Recipients belong in your dashboard settings, not in a field a stranger can populate.
+          </p>
+
+          <h2 id="spam-handling-pipeline">Spam: the part that actually determines whether this works</h2>
+          <p>
+            Here's an uncomfortable truth: the moment you put a public form on the internet, bots will find it. Not eventually — usually within hours. Untargeted comment-spam and phishing bots crawl the web constantly looking for exactly this shape of thing: a <code>&lt;form&gt;</code> tag with an action URL. If your form backend's spam handling is an afterthought, your "form backend" project quietly turns into a "spam relay" project, and you won't notice until your notification inbox is unusable. For deeper insights on balancing friction and spam defense, see our guide to <a href="/blog/form-design-conversion">form design for higher conversions (and less spam)</a>.
+          </p>
+          <p>
+            A serious form backend runs submissions through several layers, roughly in this order:
+          </p>
+          <ol>
+            <li><strong>Honeypot fields.</strong> A hidden input (like the <code>_gotcha</code> field mentioned above) that's invisible to real visitors via CSS but gets filled in by bots that blindly complete every field on a page. Any value in it is an instant, free, zero-false-positive signal.</li>
+            <li><strong>IP and origin checks.</strong> Requests from known bad ranges, or from an origin that doesn't match any domain you've registered for the form, get rejected before they're even processed.</li>
+            <li><strong>Keyword and regex filters.</strong> Catches the crude stuff — pharmaceutical spam, SEO link farms, the greatest hits of junk content.</li>
+            <li><strong>Excessive-link detection.</strong> A message that's mostly URLs is a strong spam signal on its own, independent of what the URLs actually say.</li>
+            <li><strong>A third-party reputation service</strong> (Akismet is the long-standing name here) that's seen enough spam across enough sites to catch patterns a single-site filter never would.</li>
+            <li><strong>An in-house ML classifier</strong> trained on the platform's own submission history, catching the stuff that's slipped past everything above.</li>
+          </ol>
+          <p>
+            The layering matters more than any individual layer. No single check is reliable enough on its own — honeypots miss sophisticated bots, keyword filters miss spam in other languages, and ML classifiers occasionally misfire on legitimate messages that happen to look unusual. Stacking several <em>different kinds</em> of signal is what gets the false-positive rate low enough to trust.
+          </p>
+          <p>
+            And that last point deserves its own paragraph, because it's the single most important design decision in this whole space: <strong>a real inquiry should never be silently deleted.</strong> If a submission only trips the least certain layer — the ML classifier — the right move isn't to bin it, it's to <em>quarantine</em> it: still deliver the notification, just flag it clearly (something like a <code>[Possible spam]</code> prefix on the subject line), and let a human make the final call with one click. Compare that to a system that deletes anything it's unsure about — you'll never know a real customer inquiry existed at all. You just won't hear from them, and you'll never know why.
+          </p>
+          <p>
+            If you're evaluating form backends, this is worth testing directly before you commit: submit something borderline through the form (a short message with a link in it, say) and see what actually happens to it. Does it show up anywhere, even flagged? Or does it just disappear? That answer tells you more about the product than any feature list will.
+          </p>
+
+          <h2 id="notifications-setup">Notifications: getting the message where it needs to go</h2>
+          <p>
+            A form that captures spam-free submissions but never tells anyone about them isn't much better than one that doesn't work at all. Notification setup is usually a dashboard task rather than a code task, but there are a few things worth understanding so you don't get surprised later.
+          </p>
+          <ul>
+            <li><strong>Recipient verification.</strong> Most services require you to verify any address you want notifications sent to. This feels like friction the first time you hit it, but it's the anti-abuse control that stops someone from using a form backend to mail-bomb a stranger's inbox by pointing a form at it — without verification, anyone could set <em>your</em> email as a form's recipient and spam you through a form they built. Verify your address once, and it's done.</li>
+            <li><strong>Recipient limits by plan.</strong> Free tiers commonly cap the number of To/CC/BCC recipients on a single notification (two is a typical number), with paid plans allowing more. If your team has a shared inbox plus two individuals who all want a copy, check the limit before you build a whole distribution around it.</li>
+            <li><strong>Sender identity.</strong> By default, your notification emails will usually come from the platform's own sending domain, which is fine for a lot of use cases but can look slightly off-brand or trip a recipient's spam filter if your organization has strict DMARC policies. If deliverability and brand consistency both matter to you, look for a custom sender domain or bring-your-own-SMTP option via the <a href="https://ollastack.com/resources/deliverability-hub/">deliverability hub</a>, so notifications arrive as <code>hello@yourdomain.com</code> rather than <code>no-reply@the-form-service.com</code>. A well-built platform will also fail over gracefully to its own sender if your custom SMTP credentials have a problem, so a misconfigured mail server doesn't mean your notifications silently vanish.</li>
+          </ul>
+
+          <h2 id="webhooks-integration">Webhooks: connecting the form to everything else</h2>
+          <p>
+            Email notifications are great for a human checking an inbox. They're a poor fit for "add this lead to our CRM" or "post a message in our team Slack the second someone books a demo." That's what webhooks are for, and it's one area where a hosted form backend can genuinely outperform a backend you'd write yourself in an afternoon. Explore our <a href="https://ollastack.com/resources/developer-hub/">developer hub</a> and <a href="/docs#webhooks">webhook guides</a> for end-to-end integration recipes.
+          </p>
+          <p>
+            The pattern is standard: you register a URL in your form's settings, and every successful, non-spam submission triggers a POST to it with the submission payload as the body. The part worth paying attention to is the signature verification, because you want to be sure a webhook actually came from your form backend and not from someone who guessed your endpoint URL.
+          </p>
+          <pre class="code"><code>import { createHmac, timingSafeEqual } from "node:crypto";
+
+function verifyWebhook(headers, rawBody, secret) {
+  const signatureHeader = headers["x-ollastack-signature"]; // "sha256=&lt;hex&gt;"
+  const expected = createHmac("sha256", secret)
+    .update(rawBody)
+    .digest("hex");
+
+  const provided = Buffer.from(signatureHeader.split("=")[1], "hex");
+  const computed = Buffer.from(expected, "hex");
+
+  return (
+    provided.length === computed.length &&
+    timingSafeEqual(provided, computed)
+  );
+}</code></pre>
+          <p>
+            That's a standard HMAC verification — compute the same hash on your side using a shared secret, compare it to the header the request arrived with, and reject anything that doesn't match. It's a small amount of code, and notably, it's the <em>only</em> server-side code this entire setup requires — and only if you actually want a webhook integration. If all you need is email notifications, you don't write any of this.
+          </p>
+          <p>
+            The other thing to look for is what happens when your webhook receiver has a bad five minutes — your server redeploys mid-request, or a downstream API you call from the webhook handler times out. A well-built form backend retries failed deliveries on a backoff schedule (several attempts spread over increasing intervals, rather than five instant retries that just hit the same downtime), and — this is the feature that saves you real debugging time — keeps a full delivery history per webhook, including the raw payload of every attempt, so you can inspect exactly what was sent and when. The best implementations add a <strong>Replay button</strong>: fix the bug in your receiving endpoint, then re-send the <em>exact</em> stored payload from the failed delivery instead of asking the customer to resubmit their form. That single feature is the difference between "we lost a lead because our webhook handler had a typo" and "we fixed the typo and replayed the delivery two minutes later."
+          </p>
+
+          <h2 id="file-uploads-without-server">File uploads without a file server</h2>
+          <p>
+            Contact forms are simple. Resumes attached to a job application form, or screenshots attached to a bug report form, are a different animal — now you need somewhere to actually store binary files, not just text fields.
+          </p>
+          <p>
+            Most hosted form backends handle this the same way they handle text: accept <code>multipart/form-data</code>, store the file in the submission record, and give you a link to download it from the dashboard (often with size and file-type limits enforced automatically, which is itself a spam-and-abuse control worth having — an unrestricted upload field is an invitation for someone to try uploading something you really don't want stored on your infrastructure). Practically, this means the HTML doesn't change much from a plain form:
+          </p>
+          <pre class="code"><code>&lt;form
+  action="https://login.ollastack.com/api/submit/your-slug"
+  method="POST"
+  enctype="multipart/form-data"
+&gt;
+  &lt;input name="name" required /&gt;
+  &lt;input name="email" type="email" required /&gt;
+  &lt;input name="resume" type="file" accept=".pdf,.doc,.docx" required /&gt;
+  &lt;button type="submit"&gt;Apply&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          <p>
+            Add <code>enctype="multipart/form-data"</code>, add a <code>type="file"</code> input, and the rest of the flow — spam filtering, notification, webhook — works exactly as it did for a text-only form. There's no separate object-storage bucket to provision, no signed-URL logic to write, no lifecycle policy to configure for old uploads. That's arguably where a hosted form backend earns its keep the most, because "build your own file upload pipeline" is a considerably bigger undertaking than "build your own text form handler."
+          </p>
+
+          <h2 id="forms-submitted-by-ai-agents">The 2026 wrinkle: forms submitted by AI agents</h2>
+          <p>
+            This is a genuinely new problem, and it didn't exist in most people's mental model of "form backends" even two or three years ago. Increasingly, the thing filling out a form isn't a human clicking through a browser — it's an autonomous agent booking a demo on a company's behalf, a monitoring script confirming a status page's contact form still works, or a CI pipeline running an end-to-end test suite against a staging site every deploy.
+          </p>
+          <p>
+            A classic spam pipeline treats all of these exactly like a bot, because structurally, they <em>are</em> bots — no mouse movement, no realistic typing cadence, submissions that arrive in milliseconds. That's a problem if the "bot" submitting your form is actually a legitimate agent acting for a real customer, or your own test suite validating the form still works after a deploy.
+          </p>
+          <p>
+            The fix modern form backends have converged on is a scoped API token. You mint a token in your dashboard, and any submission authenticated with <code>Authorization: Bearer &lt;token&gt;</code> is treated as trusted rather than anonymous — it skips the honeypot check, the CAPTCHA (if you have one configured), and the per-IP rate limit that would otherwise throttle a script hammering the endpoint during a test run. Submissions made this way get tagged with the token's identity in your dashboard, so you can tell at a glance which entries came from a human on your site versus an automated process, without them getting mixed up or, worse, one getting mistakenly filtered as spam. Read the <a href="https://ollastack.com/docs/agents">agent docs</a> and our in-depth analysis on <a href="/blog/can-ai-agents-submit-forms-safely">how AI agents can submit forms safely</a> if this is relevant to your setup — you can also see <a href="/blog/form-backend-for-ai-agents">why forms break for LLMs</a> and explore how to provide an <a href="/blog/email-for-ai-agents">email inbox for AI agents</a>.
+          </p>
+          <p>
+            Agents also benefit from being able to discover the entire API surface programmatically rather than needing a human to read documentation and hand-write integration code — a machine-readable spec at a predictable URL (an <a href="https://ollastack.com/docs/api">OpenAPI document</a>, typically) lets an agent figure out what fields a form expects and how to submit to it, without a person in the loop at all.
+          </p>
+
+          <h2 id="cors-and-security-basics">CORS, allowed origins, and other security basics</h2>
+          <p>
+            Because your form is submitting from a browser running on someone else's machine, cross-origin behavior matters, even though — helpfully — you rarely have to configure it by hand. A well-built form backend already knows the origin(s) you registered for a given form (the domain your site is served from) and sets its CORS headers accordingly, rejecting a <code>fetch()</code> call from an origin it doesn't recognize before it ever reaches your spam pipeline or your notification logic. If you switch domains, or add a staging subdomain, you'll usually need to add it to the form's allowed-origins list in the dashboard — a two-minute settings change, not a code change.
+          </p>
+          <p>
+            The other basic worth checking is rate limiting per IP address, independent of the spam classifier. This catches a different failure mode: not "this content is spam," but "this single visitor (or misbehaving script) is hammering the endpoint," which is worth throttling regardless of what's in the payload. Combined with the honeypot and the layered spam pipeline described earlier, this is what stops a static contact form from ever becoming a liability, even though there's no server of yours actually sitting between the internet and the form's logic.
+          </p>
+
+          <h2 id="multi-step-forms-and-redirects">Multi-step forms and custom redirects</h2>
+          <p>
+            Not every form is a single page with a submit button. Multi-step forms — a qualifying question, then contact details, then a scheduling widget — are common for anything sales-adjacent, and they're entirely compatible with this approach, because from the form backend's point of view, a multi-step form is just a form whose fields happen to be spread across a JavaScript-managed wizard instead of one HTML page. As long as the final step assembles all the collected fields into one <code>fetch()</code> call (or one classic <code>&lt;form&gt;</code> submission), the backend handles it exactly like any other submission.
+          </p>
+          <p>
+            The redirect field mentioned earlier (<code>_next</code>) is what most classic HTML-only forms use to send a visitor to a "thank you" page after a successful submission, without any client-side JavaScript at all:
+          </p>
+          <pre class="code"><code>&lt;form action="https://login.ollastack.com/api/submit/your-slug" method="POST"&gt;
+  &lt;input type="hidden" name="_next" value="https://yoursite.com/thanks" /&gt;
+  &lt;input name="email" type="email" required /&gt;
+  &lt;button type="submit"&gt;Subscribe&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          <p>
+            If you're building the multi-step version in JavaScript instead, you'll typically read the <code>next</code> value back from the JSON response (<code>{ success: true, id: "sub_...", next: &lt;url|null&gt; }</code>) and perform the navigation yourself with <code>window.location.href = data.next</code>, which gives you the option to show a success animation first, or route to a different page depending on which "step" the visitor came from.
+          </p>
+
+          <h2 id="testing-before-you-trust-it">Testing before you trust it</h2>
+          <p>
+            Before you point a real, public-facing form at any backend — hosted or homegrown — run through a short verification pass. It costs ten minutes and it's the difference between finding a misconfiguration yourself versus a customer finding it for you:
+          </p>
+          <ul class="checklist">
+            <li>Submit a real test entry through the live page, not through a dashboard "test submission" button, since the two can behave differently if your form's HTML has a typo in a field name.</li>
+            <li>Confirm the notification email actually arrived, not just that the dashboard shows the submission — deliverability issues are invisible unless you specifically check for them.</li>
+            <li>Trigger the webhook, if you've configured one, and confirm a delivery row appears with the payload you expect.</li>
+            <li>Deliberately try to break the honeypot — submit through your browser's dev console with the hidden field populated, and confirm it gets flagged rather than silently accepted.</li>
+            <li>Check what a borderline submission does — something with a link in the message, say — and make sure it's quarantined and visible rather than deleted outright, per the "never silently drop a real lead" principle from earlier in this piece.</li>
+          </ul>
+          <p>
+            If you're automating this as part of a CI/CD pipeline or browser test suite, check out our walkthroughs on <a href="/blog/assert-on-email-in-playwright-cypress">asserting on emails in Playwright and Cypress</a> as well as <a href="/blog/test-inbox-docker">testing emails in Docker with disposable inboxes</a>.
+          </p>
+          <p>
+            If you're migrating an existing form from one backend to another rather than starting fresh, it's worth running both endpoints in parallel for a few days before decommissioning the old one — point a hidden test form at the new endpoint, confirm everything works end to end, and only then cut the live form over. The <a href="https://ollastack.com/resources/migration-hub/">Ollastack migration hub</a> has step-by-step cutover checklists and migration recipes.
+          </p>
+
+          <h2 id="a-complete-worked-example">A complete worked example</h2>
+          <p>
+            Let's put the whole thing together — a realistic contact form, with a honeypot, JS-driven submission, and a success state, wired entirely to a hosted endpoint. No backend code below is anything you deploy; the only "server" involved is the third-party endpoint.
+          </p>
+          <pre class="code"><code>&lt;form id="contact-form"&gt;
+  &lt;label&gt;Name
+    &lt;input name="name" required /&gt;
+  &lt;/label&gt;
+
+  &lt;label&gt;Email
+    &lt;input name="email" type="email" required /&gt;
+  &lt;/label&gt;
+
+  &lt;label&gt;Message
+    &lt;textarea name="message" required&gt;&lt;/textarea&gt;
+  &lt;/label&gt;
+
+  &lt;!-- honeypot: hidden from real visitors via CSS, filled in by bots --&gt;
+  &lt;input
+    type="text"
+    name="_gotcha"
+    style="display:none"
+    tabindex="-1"
+    autocomplete="off"
+  /&gt;
+
+  &lt;button type="submit"&gt;Send message&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;p id="form-status" role="status"&gt;&lt;/p&gt;
+
+&lt;script&gt;
+  const form = document.getElementById("contact-form");
+  const status = document.getElementById("form-status");
+  const endpoint = "https://login.ollastack.com/api/submit/your-slug";
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    status.textContent = "Sending…";
+
+    const payload = Object.fromEntries(new FormData(form));
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        form.reset();
+        status.textContent = "Thanks — we'll get back to you shortly.";
+      } else {
+        status.textContent = "Something went wrong. Please try again.";
+      }
+    } catch (error) {
+      status.textContent = "Network error. Please try again.";
+    }
+  });
+&lt;/script&gt;</code></pre>
+          <p>
+            Walk through what this buys you, top to bottom: a real contact form, spam-filtered, notification-driven, with an inline success message and no page reload — built with a form tag, a script tag, and one URL. Every piece of the "hard part" — deliverability, spam classification, storage, security headers — lives entirely on the other side of that URL.
+          </p>
+
+          <h2 id="when-you-need-a-real-server">When you actually do need a real server</h2>
+          <p>
+            None of this is an argument that you should never write a backend — it's an argument that a contact form is rarely the reason to start. A few situations genuinely do call for your own server-side code, and it's worth being honest about where that line sits:
+          </p>
+          <ul>
+            <li><strong>You need custom business logic on submission:</strong> checking inventory before confirming an order, calculating a real-time quote, or writing to an internal system with rules too specific for a generic webhook to express.</li>
+            <li><strong>You're processing payments directly:</strong> which brings its own compliance surface (PCI scope, in particular) that a form backend isn't designed to handle for you.</li>
+            <li><strong>Your submission volume and complexity genuinely warrant a bespoke pipeline:</strong> very large enterprises with dedicated data-processing requirements sometimes are past the point where a general-purpose tool is the right fit.</li>
+            <li><strong>You need submissions to feed directly into a proprietary internal system:</strong> with no webhook-friendly API on the receiving end at all.</li>
+          </ul>
+          <p>
+            Even in these cases, a common pattern is to use a hosted form backend for the <em>front door</em> — validation, spam filtering, the honeypot, the notification — and have its webhook trigger your custom logic downstream, rather than reimplementing spam filtering and deliverability from scratch just to get to the one piece of genuinely custom logic you actually needed.
+          </p>
+
+          <h2 id="the-bigger-picture">The bigger picture</h2>
+          <p>
+            Static sites won an argument that used to be genuinely contentious: for the vast majority of content-driven sites, you don't need a server humming along 24/7 just to serve pages. Forms were the last real gap in that argument — the one place where "static" seemed to force your hand back toward a runtime. Hosted form backends close that gap cleanly, and they do it by being <em>narrowly</em> good at one thing rather than broadly mediocre at everything a general-purpose backend would need to be.
+          </p>
+          <p>
+            The practical upshot: the next time you're staring at a <code>&lt;form&gt;</code> tag on a static site wondering what to put in the <code>action</code> attribute, resist the urge to reach for a framework. Point it at an endpoint built for exactly this job, spend your afternoon on something your site actually needs, and let someone else worry about SPF records and retry backoffs. If you want to see the whole flow live before committing anything, <a href="https://login.ollastack.com/register">create a form on Ollastack</a> — most services, Ollastack included, have a <a href="https://ollastack.com/pricing">free tier</a> generous enough to fully evaluate the fit before you touch a paid plan.
+          </p>
+
+          <h2 id="frequently-asked-questions">Frequently asked questions</h2>
+          <div class="faq-grid">
+            <div class="faq-card">
+              <h3 class="faq-question">Do I need to know backend development to set this up?</h3>
+              <p class="faq-answer">No — that's the entire point of this approach. Creating the form, copying the endpoint URL, and pasting it into your form's action attribute (or a fetch() call) requires only HTML and, optionally, a little JavaScript for a custom success state. Everything downstream — spam filtering, notification emails, storage — is handled by the service, with no server-side code of your own required unless you specifically want a webhook integration.</p>
+            </div>
+            <div class="faq-card">
+              <h3 class="faq-question">Will this work with static site generators like Hugo, Astro, or Eleventy?</h3>
+              <p class="faq-answer">Yes, without exception. These generators output plain HTML, CSS, and JavaScript at build time, and a form backend has no idea — and no reason to care — which generator produced the page it's receiving a submission from. Anywhere you can write a &lt;form&gt; tag or call fetch(), this works.</p>
+            </div>
+            <div class="faq-card">
+              <h3 class="faq-question">What actually stops my form from filling up with spam?</h3>
+              <p class="faq-answer">A layered pipeline: a honeypot field invisible to humans but visible to bots, IP and origin checks, keyword and link-density filters, a reputation service like Akismet, and typically a machine-learning classifier trained on real submission history. Crucially, a well-built system never silently deletes a submission it's only moderately unsure about — it quarantines and flags it, still delivering the notification, so a genuine inquiry is never lost to a false positive.</p>
+            </div>
+            <div class="faq-card">
+              <h3 class="faq-question">Can I still get an email notification, or do I need to check a dashboard constantly?</h3>
+              <p class="faq-answer">Email notifications are the default expectation, not an extra feature. You set a verified recipient address (or a few, depending on your plan's limits) in the form's settings, and a notification fires automatically the moment a real submission arrives. Dashboards are useful for history and for reviewing anything flagged as possible spam, but day-to-day, the email is what you actually rely on.</p>
+            </div>
+            <div class="faq-card">
+              <h3 class="faq-question">What happens if I need the data somewhere other than my inbox — like a CRM or Slack?</h3>
+              <p class="faq-answer">That's what webhooks are for. Register a URL in the form's settings, and every successful, non-spam submission gets POSTed to it, typically with an HMAC signature you can verify to confirm the request genuinely came from your form backend. Look for a service that shows you full delivery history and lets you retry (or "replay") a failed delivery, rather than one that fires the webhook once and gives up silently if your receiving endpoint happened to be down.</p>
+            </div>
+            <div class="faq-card">
+              <h3 class="faq-question">Can an automated script or CI pipeline submit the form without getting flagged as a bot?</h3>
+              <p class="faq-answer">On modern platforms, yes — mint a scoped API token in the dashboard and authenticate the submission with an Authorization: Bearer header. A submission made this way is treated as trusted: it bypasses the honeypot, CAPTCHA, and per-IP rate limiting that would otherwise apply to an anonymous request, and it's tagged in your dashboard so you can distinguish agent or script submissions from human ones.</p>
+            </div>
+            <div class="faq-card">
+              <h3 class="faq-question">Is this actually secure enough for a form that handles sensitive information, like a job application?</h3>
+              <p class="faq-answer">For most use cases, yes, provided the service supports the basics: restricted CORS origins, HMAC-signed webhooks, encrypted storage of any custom SMTP credentials, and file-type/size limits on uploads. If you're handling especially sensitive data — health information, payment details — check the specific service's compliance posture directly rather than assuming; that's also generally the point at which some custom server-side handling becomes worth the extra effort described earlier in this piece.</p>
+            </div>
+            <div class="faq-card">
+              <h3 class="faq-question">What if I outgrow the free tier or need more than one form?</h3>
+              <p class="faq-answer">Every major provider in this space has paid tiers that scale submission volume, recipient counts, and form counts upward — check the specific <a href="https://ollastack.com/pricing">pricing page</a> for current limits, since these change more often than the underlying integration mechanics do. The good news is that moving between tiers, or even between providers later, doesn't touch your site's HTML beyond the endpoint URL itself.</p>
+            </div>
+          </div>
+
+          <div class="post-last-updated mono">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Last updated August 24, 2026
+          </div>
+
+          <!-- Related Reading -->
+          <section class="related-section">
+            <h3 class="related-title mono">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              Related reading
+            </h3>
+            <div class="related-grid">
+              <a href="/blog/form-backend-for-ai-agents" class="related-card">
+                <div class="related-card-meta mono">Ollastack Guide</div>
+                <h4 class="related-card-title">Ollastack Form Engine for AI Agents &amp; LLMs</h4>
+              </a>
+              <a href="https://ollastack.com/resources/migration-hub/" class="related-card">
+                <div class="related-card-meta mono">Ollastack Hub</div>
+                <h4 class="related-card-title">Ollastack Form Migration and Cutover Hub</h4>
+              </a>
+              <a href="https://ollastack.com/docs/api" class="related-card">
+                <div class="related-card-meta mono">Ollastack Docs</div>
+                <h4 class="related-card-title">Ollastack Form Backend API &amp; Webhook Specs</h4>
+              </a>
+              <a href="/blog/form-design-conversion" class="related-card">
+                <div class="related-card-meta mono">Ollastack Guide</div>
+                <h4 class="related-card-title">Ollastack Form Design: High Conversion &amp; Zero Spam</h4>
+              </a>
+              <a href="/blog/can-ai-agents-submit-forms-safely" class="related-card">
+                <div class="related-card-meta mono">Ollastack Security</div>
+                <h4 class="related-card-title">Can AI Agents Submit Forms Safely with Ollastack?</h4>
+              </a>
+              <a href="/blog/email-for-ai-agents" class="related-card">
+                <div class="related-card-meta mono">Ollastack Email</div>
+                <h4 class="related-card-title">Ollastack Agent Inboxes: Give AI Agents Their Own Email</h4>
+              </a>
+            </div>
+          </section>
+
+        </article>
+
+        <!-- Right Column: Ollastack Promo Card (Matching Screenshot) -->
+        <aside class="right-sidebar">
+          <div class="sidebar-promo-card">
+            <div class="promo-brand mono">OLLASTACK</div>
+            <p class="promo-desc">A form backend built for developers — and the agents increasingly submitting on their behalf.</p>
+            <a href="https://login.ollastack.com/register" class="btn-promo">Start free →</a>
+            <div class="promo-meta mono">No credit card · 50 submissions/mo</div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container-wide">
+      <div class="foot-grid">
+        <div>
+          <a href="/" aria-label="ollastack" class="logo-lockup">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="logo-mark">
+              <rect x="2" y="2" width="20" height="20" rx="4" fill="#DA291C"></rect>
+              <rect x="6" y="7" width="12" height="2" rx="1" fill="#ffffff"></rect>
+              <rect x="6" y="11" width="12" height="2" rx="1" fill="#ffffff"></rect>
+              <rect x="6" y="15" width="12" height="2" rx="1" fill="#ffffff"></rect>
+            </svg>
+            <span class="wordmark">ollastack</span>
+          </a>
+          <p class="tagline">The message layer for AI agents — forms in, email out, tested in CI. One API.</p>
+        </div>
+        <div>
+          <div class="foot-group-title mono">Product</div>
+          <ul class="foot-links">
+            <li><a href="/">Overview</a></li>
+            <li><a href="/email-api">Email API</a></li>
+            <li><a href="/pricing">Pricing</a></li>
+            <li><a href="/docs#quickstart">Quickstart</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="foot-group-title mono">Resources</div>
+          <ul class="foot-links">
+            <li><a href="/resources">All guides</a></li>
+            <li><a href="/resources/migration-hub">Migration hub</a></li>
+            <li><a href="/resources/developer-hub">Developer hub</a></li>
+            <li><a href="/resources/deliverability-hub">Deliverability hub</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="foot-group-title mono">Developers</div>
+          <ul class="foot-links">
+            <li><a href="/docs">Docs</a></li>
+            <li><a href="/docs/agents">For AI agents</a></li>
+            <li><a href="https://login.ollastack.com/api/openapi.json">OpenAPI spec</a></li>
+            <li><a href="/docs#webhooks">Webhooks</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="foot-group-title mono">Company</div>
+          <ul class="foot-links">
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/careers">Careers</a></li>
+            <li><a href="/docs/smtp">Custom SMTP</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="foot-bottom mono">
+        <span>© 2026 Ollastack — an Ollasoftware Solutions company</span>
+        <span>Keerthi SB (keerthishankar68-sb)</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/main.js"></script>
+</body>
+</html>

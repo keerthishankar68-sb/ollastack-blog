@@ -41,11 +41,33 @@ document.addEventListener("DOMContentLoaded", function () {
     block.appendChild(btn);
   });
 
-  // Table of Contents Active Link Highlight on Scroll
+  // Table of Contents Active Link Highlight & Smooth Auto-Scroll
   const tocLinks = document.querySelectorAll(".toc-link");
+  const inpageLinks = document.querySelectorAll(".inpage-toc-grid a, .toc-link");
   const headings = Array.from(document.querySelectorAll(".article-content h2, .article-content h3[id]"));
 
+  // Smooth scroll for all TOC links
+  inpageLinks.forEach(function (link) {
+    link.addEventListener("click", function (e) {
+      const targetId = link.getAttribute("href");
+      if (targetId && targetId.startsWith("#")) {
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          const offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 90;
+          window.scrollTo({
+            top: offsetTop,
+            behavior: "smooth"
+          });
+          history.pushState(null, null, targetId);
+        }
+      }
+    });
+  });
+
   if (tocLinks.length > 0 && headings.length > 0) {
+    let lastActiveId = "";
+
     function onScroll() {
       const scrollPos = window.scrollY + 120;
       let currentId = "";
@@ -59,13 +81,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      tocLinks.forEach(function (link) {
-        if (link.getAttribute("href") === "#" + currentId) {
-          link.classList.add("active");
-        } else {
-          link.classList.remove("active");
-        }
-      });
+      if (currentId !== lastActiveId) {
+        lastActiveId = currentId;
+        tocLinks.forEach(function (link) {
+          if (link.getAttribute("href") === "#" + currentId) {
+            link.classList.add("active");
+            // Keep active link visible in the scrollable TOC sidebar
+            link.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          } else {
+            link.classList.remove("active");
+          }
+        });
+      }
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
