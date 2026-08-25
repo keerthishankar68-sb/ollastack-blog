@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Automate OTP Email Testing in CI/CD Pipelines — Ollastack</title>
+  <meta name="description" content="The practical guide to testing email verification flows with isolated inboxes, Email APIs, Playwright, Cypress, Selenium, CI workflows, and secure parallel execution.">
+  <link rel="canonical" href="https://ollastack.com/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines">
+  
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:title" content="How to Automate OTP Email Testing in CI/CD Pipelines">
+  <meta property="og:description" content="The practical guide to testing email verification flows with isolated inboxes, Email APIs, Playwright, Cypress, Selenium, CI workflows, and secure parallel execution.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://ollastack.com/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines">
+  <meta property="og:image" content="https://ollastack.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Automate OTP Email Testing in CI/CD Pipelines">
+  <meta name="twitter:description" content="The practical guide to testing email verification flows with isolated inboxes, Email APIs, Playwright, Cypress, Selenium, CI workflows, and secure parallel execution.">
+  <meta name="twitter:image" content="https://ollastack.com/og.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+
+  <!-- Structured Data JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "How to Automate OTP Email Testing in CI/CD Pipelines",
+    "description": "The practical guide to testing email verification flows with isolated inboxes, Email APIs, Playwright, Cypress, Selenium, CI workflows, and secure parallel execution.",
+    "datePublished": "2026-08-25",
+    "author": {
+      "@type": "Organization",
+      "name": "OllaStack Team"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Ollastack",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://ollastack.com/favicon.svg"
+      }
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ============ ANNOUNCEMENT BAR ============ -->
+  <aside class="announce" aria-label="Announcement">
+    <div class="container-wide announce-inner">
+      <span class="announce-dot">🔴</span>
+      <span><strong class="announce-bold">GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</span>
+    </div>
+  </aside>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="nav" role="banner">
+    <div class="container-wide nav-inner">
+      <div class="nav-left">
+        <a href="/" aria-label="ollastack" class="logo-lockup">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="logo-mark">
+            <rect x="2" y="2" width="20" height="20" rx="4" fill="#DA291C"></rect>
+            <rect x="6" y="7" width="12" height="2" rx="1" fill="#ffffff"></rect>
+            <rect x="6" y="11" width="12" height="2" rx="1" fill="#ffffff"></rect>
+            <rect x="6" y="15" width="12" height="2" rx="1" fill="#ffffff"></rect>
+          </svg>
+          <span class="wordmark">ollastack</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary Navigation">
+          <a href="/#product" class="nav-link">Product ▾</a>
+          <a href="/#use-cases" class="nav-link">Use cases</a>
+          <a href="/email-api" class="nav-link">Email API</a>
+          <a href="/docs" class="nav-link">Docs</a>
+          <a href="/#resources" class="nav-link">Resources ▾</a>
+          <a href="/blog" class="nav-link active">Blog</a>
+          <a href="/#pricing" class="nav-link">Pricing</a>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <a class="nav-signin" href="https://login.ollastack.com/login">Sign in</a>
+        <a class="btn-start-free" href="https://login.ollastack.com/register">Start free →</a>
+        <button type="button" class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile nav -->
+    <nav class="nav-mobile" id="nav-mobile" aria-label="Mobile">
+      <a href="/#product" class="nav-mobile-link">Product</a>
+      <a href="/#use-cases" class="nav-mobile-link">Use cases</a>
+      <a href="/email-api" class="nav-mobile-link">Email API</a>
+      <a href="/docs" class="nav-mobile-link">Docs</a>
+      <a href="/#resources" class="nav-mobile-link">Resources</a>
+      <a href="/blog" class="nav-mobile-link active">Blog</a>
+      <a href="/#pricing" class="nav-mobile-link">Pricing</a>
+      <a class="nav-mobile-link" href="https://login.ollastack.com/login">Sign in</a>
+      <a class="btn-start-free" href="https://login.ollastack.com/register" style="justify-content:center;margin-top:8px;">Start free →</a>
+    </nav>
+  </header>
+
+  <!-- ============ ARTICLE MAIN CONTENT ============ -->
+  <main class="article-shell">
+    <div class="container-wide">
+      
+      <!-- 3-Column Layout: Left (TOC), Center (Article), Right (Promo Card) -->
+      <div class="article-3col-grid">
+
+        <!-- Left Column: Back Button + Sticky Red TOC Card -->
+        <aside class="left-sidebar">
+          <a href="/blog" class="back-pill mono">
+            ‹ ALL POSTS
+          </a>
+
+          <!-- Table of Contents Red Card -->
+          <div class="toc-sidebar">
+            <div class="toc-header">
+              <div class="toc-header-left">
+                <svg class="toc-header-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+                <span class="toc-title">ON THIS PAGE</span>
+              </div>
+              <span class="toc-badge">24 sections</span>
+            </div>
+            <div class="toc-body">
+              <nav class="toc-list" aria-label="Table of contents">
+                <a href="#quick-answer" class="toc-link">
+                  <span class="toc-num">01</span>
+                  <span class="toc-text">Quick Answer</span>
+                </a>
+                <a href="#key-takeaways" class="toc-link">
+                  <span class="toc-num">02</span>
+                  <span class="toc-text">Key Takeaways</span>
+                </a>
+                <a href="#what-is-otp-email-testing" class="toc-link">
+                  <span class="toc-num">03</span>
+                  <span class="toc-text">What Is OTP Email Testing?</span>
+                </a>
+                <a href="#why-otp-email-tests-fail-in-cicd" class="toc-link">
+                  <span class="toc-num">04</span>
+                  <span class="toc-text">Why OTP Tests Fail in CI/CD</span>
+                </a>
+                <a href="#best-ways-to-test-otp-emails-automatically" class="toc-link">
+                  <span class="toc-num">05</span>
+                  <span class="toc-text">Best Testing Approaches</span>
+                </a>
+                <a href="#which-otp-testing-approach-should-you-choose" class="toc-link">
+                  <span class="toc-num">06</span>
+                  <span class="toc-text">Which Approach to Choose</span>
+                </a>
+                <a href="#how-to-automate-otp-email-testing" class="toc-link">
+                  <span class="toc-num">07</span>
+                  <span class="toc-text">How to Automate (6 Steps)</span>
+                </a>
+                <a href="#how-to-test-otp-emails-with-playwright" class="toc-link">
+                  <span class="toc-num">08</span>
+                  <span class="toc-text">Testing with Playwright</span>
+                </a>
+                <a href="#how-to-test-otp-emails-with-cypress" class="toc-link">
+                  <span class="toc-num">09</span>
+                  <span class="toc-text">Testing with Cypress</span>
+                </a>
+                <a href="#how-to-test-otp-emails-with-selenium" class="toc-link">
+                  <span class="toc-num">10</span>
+                  <span class="toc-text">Testing with Selenium</span>
+                </a>
+                <a href="#parsing-otp-emails-reliably" class="toc-link">
+                  <span class="toc-num">11</span>
+                  <span class="toc-text">Parsing Emails Reliably</span>
+                </a>
+                <a href="#plain-text-vs-html-email" class="toc-link">
+                  <span class="toc-num">12</span>
+                  <span class="toc-text">Plain Text vs HTML</span>
+                </a>
+                <a href="#testing-magic-links" class="toc-link">
+                  <span class="toc-num">13</span>
+                  <span class="toc-text">Testing Magic Links</span>
+                </a>
+                <a href="#testing-edge-cases" class="toc-link">
+                  <span class="toc-num">14</span>
+                  <span class="toc-text">Resend, Expiration &amp; Errors</span>
+                </a>
+                <a href="#how-to-run-otp-tests-in-github-actions" class="toc-link">
+                  <span class="toc-num">15</span>
+                  <span class="toc-text">GitHub Actions Pipeline</span>
+                </a>
+                <a href="#how-to-run-otp-tests-in-gitlab-ci" class="toc-link">
+                  <span class="toc-num">16</span>
+                  <span class="toc-text">GitLab CI Pipeline</span>
+                </a>
+                <a href="#handling-otp-test-collisions-in-parallel-ci-jobs" class="toc-link">
+                  <span class="toc-num">17</span>
+                  <span class="toc-text">Parallel CI Collisions</span>
+                </a>
+                <a href="#polling-vs-fixed-delays" class="toc-link">
+                  <span class="toc-num">18</span>
+                  <span class="toc-text">Polling vs Delays</span>
+                </a>
+                <a href="#debugging-and-diagnostics" class="toc-link">
+                  <span class="toc-num">19</span>
+                  <span class="toc-text">Debugging &amp; Diagnostics</span>
+                </a>
+                <a href="#security-and-data-cleanup" class="toc-link">
+                  <span class="toc-num">20</span>
+                  <span class="toc-text">Security &amp; Data Cleanup</span>
+                </a>
+                <a href="#email-api-vs-imap-vs-mock-smtp" class="toc-link">
+                  <span class="toc-num">21</span>
+                  <span class="toc-text">Email API vs IMAP vs Mock</span>
+                </a>
+                <a href="#common-otp-testing-problems-and-fixes" class="toc-link">
+                  <span class="toc-num">22</span>
+                  <span class="toc-text">Common Problems &amp; Fixes</span>
+                </a>
+                <a href="#a-simple-ci-checklist-for-otp-email-tests" class="toc-link">
+                  <span class="toc-num">23</span>
+                  <span class="toc-text">CI Setup Checklist</span>
+                </a>
+                <a href="#frequently-asked-questions" class="toc-link">
+                  <span class="toc-num">24</span>
+                  <span class="toc-text">Frequently Asked Questions</span>
+                </a>
+                <a href="#related-reading" class="toc-link">
+                  <span class="toc-num">25</span>
+                  <span class="toc-text">Related Reading</span>
+                </a>
+              </nav>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center Column: Article Main Content -->
+        <article class="article-content" role="main">
+          
+          <!-- Article Header -->
+          <header class="article-header">
+            <div class="article-tags mono">
+              <span class="article-tag">EMAIL TESTING</span>
+              <span class="article-tag">CI/CD PIPELINES</span>
+              <span class="article-tag">PLAYWRIGHT &amp; CYPRESS</span>
+            </div>
+            <h1 class="article-title">How to Automate OTP Email Testing in CI/CD Pipelines</h1>
+            <p class="article-subtitle">
+              The practical guide to testing email verification flows with isolated inboxes, Email APIs, Playwright, Cypress, Selenium, CI workflows, and secure parallel execution.
+            </p>
+
+            <div class="article-meta-bar">
+              <div class="author-lockup">
+                <div class="author-avatar" style="background:#DA291C;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;width:32px;height:32px;border-radius:50%;">
+                  OS
+                </div>
+                <div class="author-details">
+                  <span class="author-name">By the OllaStack Team</span>
+                  <span class="post-date mono">25 August 2026 · 18 min read</span>
+                </div>
+              </div>
+              
+              <div class="share-buttons">
+                <a href="https://twitter.com/intent/tweet?text=How%20to%20Automate%20OTP%20Email%20Testing%20in%20CI/CD%20Pipelines&url=https://ollastack.com/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines" target="_blank" rel="noopener noreferrer" class="share-btn mono" aria-label="Share on X">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  <span>Share</span>
+                </a>
+              </div>
+            </div>
+          </header>
+
+          <!-- In-Page TOC Grid (Quick jump for mobile & accessibility) -->
+          <div class="inpage-toc-box">
+            <div class="inpage-toc-title mono">Quick Jump Navigation</div>
+            <div class="inpage-toc-grid">
+              <a href="#quick-answer" class="bold-red-link">01. Quick Answer</a>
+              <a href="#key-takeaways" class="bold-red-link">02. Key Takeaways</a>
+              <a href="#what-is-otp-email-testing" class="bold-red-link">03. What Is OTP Email Testing?</a>
+              <a href="#why-otp-email-tests-fail-in-cicd" class="bold-red-link">04. Why OTP Tests Fail</a>
+              <a href="#best-ways-to-test-otp-emails-automatically" class="bold-red-link">05. Best Testing Methods</a>
+              <a href="#how-to-automate-otp-email-testing" class="bold-red-link">06. 6-Step Implementation</a>
+              <a href="#how-to-test-otp-emails-with-playwright" class="bold-red-link">07. Playwright Guide</a>
+              <a href="#how-to-test-otp-emails-with-cypress" class="bold-red-link">08. Cypress Guide</a>
+              <a href="#how-to-test-otp-emails-with-selenium" class="bold-red-link">09. Selenium Guide</a>
+              <a href="#how-to-run-otp-tests-in-github-actions" class="bold-red-link">10. GitHub Actions</a>
+              <a href="#frequently-asked-questions" class="bold-red-link">11. FAQs</a>
+              <a href="#related-reading" class="bold-red-link">12. Related Reading</a>
+            </div>
+          </div>
+
+          <!-- ============ 01. QUICK ANSWER ============ -->
+          <section id="quick-answer" class="section-block">
+            <h2>Quick Answer</h2>
+            <div class="quick-answer-card" style="background:#ffffff;border:1px solid var(--line);border-radius:var(--radius-md);padding:24px;margin:20px 0 28px 0;box-shadow:0 2px 10px rgba(0,0,0,0.03);">
+              <p style="font-size:16.5px;line-height:1.7;margin-top:0;">
+                To automate OTP email testing in CI/CD, use a dedicated test inbox or <a href="/email-api" class="bold-red-link">Email API</a> instead of a personal Gmail or Outlook account. Generate a unique email address for each test run, trigger the OTP email, retrieve the message programmatically, extract the verification code, and submit it through your browser automation framework.
+              </p>
+              
+              <div class="flow-pipeline" style="background:var(--code-bg);color:var(--code-ink);border-radius:var(--radius-sm);padding:14px 18px;font-family:var(--font-mono);font-size:13.5px;overflow-x:auto;margin:16px 0;line-height:1.6;">
+                Create isolated test inbox <span style="color:#DA291C;font-weight:bold;">↓</span> Create/register test user <span style="color:#DA291C;font-weight:bold;">↓</span> Trigger OTP email <span style="color:#DA291C;font-weight:bold;">↓</span> Retrieve email <span style="color:#DA291C;font-weight:bold;">↓</span> Extract OTP <span style="color:#DA291C;font-weight:bold;">↓</span> Submit OTP <span style="color:#DA291C;font-weight:bold;">↓</span> Verify successful authentication
+              </div>
+
+              <p style="margin-bottom:0;color:var(--muted);font-size:15px;">
+                For most CI/CD end-to-end tests, an <a href="/email-api" class="bold-red-link">Email API</a> with isolated inboxes is a practical approach because the test can access messages programmatically without requiring a person to open an inbox.
+              </p>
+            </div>
+          </section>
+
+          <!-- ============ 02. KEY TAKEAWAYS ============ -->
+          <section id="key-takeaways" class="section-block">
+            <div class="takeaways-box">
+              <h3 class="takeaways-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DA291C" stroke-width="2.5">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                </svg>
+                Key Takeaways
+              </h3>
+              <ul class="takeaways-list">
+                <li><strong>Validate the real verification flow:</strong> OTP email testing should validate real staging delivery instead of disabling OTP checks.</li>
+                <li><strong>Avoid shared consumer inboxes:</strong> Shared Gmail or Outlook accounts introduce delivery lag, MFA blocks, spam filtering, and test collisions.</li>
+                <li><strong>Dedicated Email API:</strong> A dedicated <a href="/email-api" class="bold-red-link">Email API</a> provides controlled, programmatic access to test messages over HTTP.</li>
+                <li><strong>Unique mailbox per parallel worker:</strong> Give each parallel CI runner a unique email address to prevent cross-worker test flakiness.</li>
+                <li><strong>Programmatic retrieval:</strong> Retrieve messages via API or webhooks rather than manual inbox access.</li>
+                <li><strong>Prefer plain-text emails:</strong> Plain-text email bodies are significantly simpler and more resilient to parse.</li>
+                <li><strong>Stable HTML selectors:</strong> For HTML emails, use <code class="mono" style="color:#DA291C;font-weight:700;">data-testid="otp-code"</code> or DOM parsing instead of regex on raw markup.</li>
+                <li><strong>Cover edge cases:</strong> Test OTP expiration, resends, invalid codes, and single-use constraints.</li>
+                <li><strong>Secrets management:</strong> Store all API keys and test passwords in CI secret vaults.</li>
+                <li><strong>Layer your tests:</strong> Use mock SMTP for local unit/integration tests and real staging Email APIs for end-to-end CI suites.</li>
+                <li><strong>Sanitize logs:</strong> Keep OTP values, passwords, and magic links out of CI logs, screenshots, and test traces.</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ============ 03. WHAT IS OTP EMAIL TESTING ============ -->
+          <section id="what-is-otp-email-testing" class="section-block">
+            <h2>What Is OTP Email Testing?</h2>
+            <p>
+              <strong>OTP email testing</strong> verifies that an application can correctly generate, send, receive, parse, and accept a one-time password delivered through email.
+            </p>
+            <p>OTP verification is commonly used during:</p>
+            <ul>
+              <li>Account registration &amp; onboarding</li>
+              <li>Email address verification</li>
+              <li>Login authentication &amp; passwordless login</li>
+              <li>Password recovery and resets</li>
+              <li>New-device verification challenges</li>
+              <li>Security-sensitive account changes (e.g., billing, email updates)</li>
+              <li>Multi-factor authentication (MFA)</li>
+            </ul>
+
+            <p>A basic manual flow is simple:</p>
+            <ol>
+              <li>Enter an email address into the web form.</li>
+              <li>Click <strong>Send OTP</strong>.</li>
+              <li>Open the email inbox.</li>
+              <li>Copy the OTP code.</li>
+              <li>Enter the OTP into the application.</li>
+              <li>Continue after successful verification.</li>
+            </ol>
+
+            <p>
+              Automating this process is more complicated because the OTP exists outside the browser. The browser automation tool (<a href="https://playwright.dev/" class="bold-red-link" target="_blank" rel="noopener">Playwright</a>, <a href="https://www.cypress.io/" class="bold-red-link" target="_blank" rel="noopener">Cypress</a>, <a href="https://www.selenium.dev/" class="bold-red-link" target="_blank" rel="noopener">Selenium</a>) can control the web page, but it cannot automatically know when an external email arrives unless you give the test an email retrieval mechanism.
+            </p>
+
+            <p>That creates an additional workflow:</p>
+            <div class="flow-pipeline" style="background:var(--code-bg);color:var(--code-ink);border-radius:var(--radius-sm);padding:14px 18px;font-family:var(--font-mono);font-size:13.5px;overflow-x:auto;margin:16px 0;line-height:1.6;">
+              Browser <span style="color:#DA291C;font-weight:bold;">↓</span> Application <span style="color:#DA291C;font-weight:bold;">↓</span> Email service <span style="color:#DA291C;font-weight:bold;">↓</span> Test inbox <span style="color:#DA291C;font-weight:bold;">↓</span> <a href="/email-api" class="bold-red-link">Email API</a> <span style="color:#DA291C;font-weight:bold;">↓</span> Test runner <span style="color:#DA291C;font-weight:bold;">↓</span> Browser
+            </div>
+
+            <p>
+              A reliable OTP test therefore needs to coordinate both the browser and the email system. The goal is not simply to check whether an email exists. A useful test must verify that the <strong>complete verification journey works end-to-end</strong>.
+            </p>
+          </section>
+
+          <!-- ============ 04. WHY OTP EMAIL TESTS FAIL IN CI/CD ============ -->
+          <section id="why-otp-email-tests-fail-in-cicd" class="section-block">
+            <h2>Why OTP Email Tests Fail in CI/CD</h2>
+            <p>
+              Browser automation is generally predictable. A test can execute:
+            </p>
+            <div class="mono" style="background:var(--bg-subtle);padding:10px 16px;border-radius:var(--radius-sm);border-left:3px solid var(--accent);font-size:14px;margin-bottom:16px;">
+              Open page → Enter email → Click button → Check result
+            </div>
+            <p>
+              Email introduces asynchronous behavior. The application sends a message. The email service processes it. The message becomes available in a mailbox. The test then needs to locate the correct message and extract the correct OTP before the code expires. Any part of that chain can fail.
+            </p>
+
+            <h3>Common Causes of Test Failure</h3>
+            
+            <h4>1. Email delivery is asynchronous</h4>
+            <p>
+              The OTP may not appear immediately. A test that expects the message instantly will fail even though the application eventually sends it successfully.
+            </p>
+
+            <h4>2. The wrong email is selected</h4>
+            <p>
+              If the inbox contains multiple OTP messages, a test might retrieve an older code. This becomes particularly problematic when a user clicks <em>Resend OTP</em>.
+            </p>
+
+            <h4>3. Tests share one inbox (Race Conditions)</h4>
+            <p>
+              Suppose four Playwright workers run simultaneously. All four tests use <code class="mono">test@example.com</code>:
+            </p>
+            <ul>
+              <li>Worker 1 requests OTP A.</li>
+              <li>Worker 2 requests OTP B.</li>
+              <li>Worker 3 requests OTP C.</li>
+              <li>Worker 4 requests OTP D.</li>
+            </ul>
+            <p>
+              If all four read from the same mailbox, there is no guarantee that Worker 2 will retrieve OTP B. The result is a flaky test suite even though the application itself is completely healthy.
+            </p>
+
+            <h4>4. The OTP expires</h4>
+            <p>
+              OTP codes usually have a short time-to-live (e.g., 5–10 minutes). If the CI runner is delayed under heavy queue loads, the OTP may expire before verification is submitted.
+            </p>
+
+            <h4>5. Email parsing is fragile</h4>
+            <p>
+              A naive six-digit regular expression (<code class="mono">\d{6}</code>) can accidentally match:
+            </p>
+            <ul>
+              <li>A tracking or order number</li>
+              <li>A timestamp or date snippet</li>
+              <li>A hex color or CSS value</li>
+              <li>An unrelated phone number or footer identifier in an HTML email</li>
+            </ul>
+
+            <h4>6. Consumer email authentication changes</h4>
+            <p>
+              A test that depends on a personal Gmail or Outlook account breaks over time due to password rotations, mandatory 2FA/MFA challenges, CAPTCHAs, provider rate limits, and spam filtering algorithms.
+            </p>
+          </section>
+
+          <!-- ============ 05. BEST WAYS TO TEST OTP EMAILS AUTOMATICALLY ============ -->
+          <section id="best-ways-to-test-otp-emails-automatically" class="section-block">
+            <h2>Best Ways to Test OTP Emails Automatically</h2>
+            <p>There are several approaches to automated OTP email testing:</p>
+
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Approach</th>
+                    <th>CI Reliability</th>
+                    <th>Speed</th>
+                    <th>Best Use</th>
+                    <th>Main Limitation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Dedicated <a href="/email-api" class="bold-red-link">Email API</a> + Isolated Inboxes</strong></td>
+                    <td><span style="color:#16a34a;font-weight:700;">High</span></td>
+                    <td><span style="color:#16a34a;font-weight:700;">Fast</span></td>
+                    <td>CI/CD E2E tests</td>
+                    <td>External API dependency</td>
+                  </tr>
+                  <tr>
+                    <td><strong>SMTP / IMAP</strong></td>
+                    <td>Medium</td>
+                    <td>Medium</td>
+                    <td>Corporate mail workflows</td>
+                    <td>Polling &amp; credential maintenance</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Mock SMTP</strong></td>
+                    <td><span style="color:#16a34a;font-weight:700;">Very High</span></td>
+                    <td><span style="color:#16a34a;font-weight:700;">Very Fast</span></td>
+                    <td>Local integration tests</td>
+                    <td>Does not validate real deliverability</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Webhooks</strong></td>
+                    <td><span style="color:#16a34a;font-weight:700;">High</span></td>
+                    <td><span style="color:#16a34a;font-weight:700;">Very Fast</span></td>
+                    <td>Event-driven CI</td>
+                    <td>Requires webhook receiver infra</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>1. Dedicated Email API</h3>
+            <p>
+              An <a href="/email-api" class="bold-red-link">Email API</a> gives your test runner programmatic access to test messages over clean HTTP endpoints. A typical flow is:
+            </p>
+            <div class="flow-pipeline" style="background:var(--code-bg);color:var(--code-ink);border-radius:var(--radius-sm);padding:14px 18px;font-family:var(--font-mono);font-size:13.5px;overflow-x:auto;margin:16px 0;line-height:1.6;">
+              Create inbox → Get credentials → Trigger OTP → Query API → Receive email → Extract OTP → Continue browser test
+            </div>
+            <p>This is the ideal approach for CI/CD because there is zero human interaction required.</p>
+
+            <h3>2. SMTP and IMAP</h3>
+            <p>
+              SMTP and IMAP can be useful when you specifically need to test your organization's existing internal mail server infrastructure. However, they require complex credential management and polling sockets.
+            </p>
+
+            <h3>3. Mock SMTP</h3>
+            <p>
+              Mock SMTP is great for local development. The app sends an email to a local mock daemon (like MailHog), and the test inspects memory. It is fast, but it does not test real deliverability, DNS, or SPF/DKIM policies.
+            </p>
+
+            <h3>4. Webhooks</h3>
+            <p>
+              A webhook-based system notifies your test infrastructure the millisecond a message arrives. Instead of polling loops, the workflow is push-based:
+            </p>
+            <div class="flow-pipeline" style="background:var(--code-bg);color:var(--code-ink);border-radius:var(--radius-sm);padding:14px 18px;font-family:var(--font-mono);font-size:13.5px;overflow-x:auto;margin:16px 0;line-height:1.6;">
+              Email arrives <span style="color:#DA291C;font-weight:bold;">↓</span> Webhook event <span style="color:#DA291C;font-weight:bold;">↓</span> Test receives notification <span style="color:#DA291C;font-weight:bold;">↓</span> OTP extracted
+            </div>
+          </section>
+
+          <!-- ============ 06. WHICH APPROACH TO CHOOSE ============ -->
+          <section id="which-otp-testing-approach-should-you-choose" class="section-block">
+            <h2>Which OTP Testing Approach Should You Choose?</h2>
+            <ul>
+              <li>For full <strong>CI/CD end-to-end testing</strong>, a dedicated <a href="/email-api" class="bold-red-link">Email API</a> with isolated test inboxes is the gold standard.</li>
+              <li>For <strong>local integration testing</strong>, mock SMTP is simpler and faster on developer laptops.</li>
+              <li>For testing <strong>corporate mailbox workflows</strong>, SMTP/IMAP may be appropriate.</li>
+              <li>For <strong>high-speed event-driven pipelines</strong>, webhooks reduce polling latency.</li>
+            </ul>
+            <p>
+              Choose the approach based on what the test needs to prove. If the purpose is to verify the complete user verification journey, your E2E test must include the real email step.
+            </p>
+          </section>
+
+          <!-- ============ 07. HOW TO AUTOMATE OTP EMAIL TESTING ============ -->
+          <section id="how-to-automate-otp-email-testing" class="section-block">
+            <h2>How to Automate OTP Email Testing (6-Step Guide)</h2>
+            <p>A resilient OTP automation workflow follows six distinct steps:</p>
+
+            <h3>Step 1: Create an Isolated Test Inbox</h3>
+            <p>
+              Generate a unique email address for each test or CI worker:
+            </p>
+            <pre class="code"><code class="language-javascript">const workerIndex = process.env.TEST_WORKER_INDEX || "0";
+const uniqueRunId = `${Date.now()}-w${workerIndex}`;
+const testEmail = `test-user-${uniqueRunId}@sandbox.example.test`;</code></pre>
+            <p>
+              If your <a href="/email-api" class="bold-red-link">Email API</a> supports disposable inboxes, create the inbox dynamically when the test begins and auto-delete it during teardown.
+            </p>
+
+            <h3>Step 2: Trigger the OTP Email</h3>
+            <p>Use your browser automation framework to perform the user action:</p>
+            <pre class="code"><code class="language-javascript">await page.goto(`${BASE_URL}/register`);
+await page.fill('input[name="email"]', testEmail);
+await page.fill('input[name="password"]', process.env.TEST_PASSWORD);
+await page.click('button[type="submit"]');
+
+await expect(page.getByRole('heading', { name: /verify/i })).toBeVisible();</code></pre>
+
+            <h3>Step 3: Retrieve the Email</h3>
+            <p>Use bounded polling with a timeout helper:</p>
+            <pre class="code"><code class="language-javascript">async function waitForEmail(inboxId, token, timeoutMs = 15000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const response = await fetch(
+      `${EMAIL_API_URL}/inboxes/${inboxId}/messages`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (response.ok) {
+      const messages = await response.json();
+      if (messages.length > 0) {
+        return messages[0];
+      }
+    }
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+  throw new Error("Timed out waiting for OTP email");
+}</code></pre>
+
+            <h3>Step 4: Identify the Correct Message</h3>
+            <p>Filter messages using metadata: Recipient, Sender, Subject, and Test-specific IDs.</p>
+            <ul>
+              <li><strong>Recipient:</strong> <code class="mono">otp-build123-worker0@example.test</code></li>
+              <li><strong>Sender:</strong> <code class="mono">no-reply@staging.example.com</code></li>
+              <li><strong>Subject:</strong> <code class="mono">Verify your email address</code></li>
+            </ul>
+
+            <h3>Step 5: Extract the OTP</h3>
+            <p>Use labeled pattern matching with a resilient fallback:</p>
+            <pre class="code"><code class="language-javascript">function extractOtp(body) {
+  const labeled = body.match(
+    /(?:verification code|security code|otp|passcode)\s*(?:is|:|=)?\s*([0-9]{4,8})/i
+  );
+  if (labeled) {
+    return labeled[1];
+  }
+  const fallback = body.match(/\b([0-9]{6})\b/);
+  return fallback ? fallback[1] : null;
+}</code></pre>
+
+            <h3>Step 6: Submit and Verify the OTP</h3>
+            <p>Submit the extracted OTP back into the browser UI and assert success:</p>
+            <pre class="code"><code class="language-javascript">const email = await waitForEmail(inboxId, inboxToken);
+const body = email.textBody || email.htmlBody || "";
+const otp = extractOtp(body);
+
+if (!otp) {
+  throw new Error("OTP code not found in email");
+}
+
+await page.fill('input[name="otpCode"]', otp);
+await page.click('button[type="submit"]');
+
+await expect(page).toHaveURL(/dashboard/);
+await expect(page.getByText(/welcome/i)).toBeVisible();</code></pre>
+          </section>
+
+          <!-- ============ 08. HOW TO TEST WITH PLAYWRIGHT ============ -->
+          <section id="how-to-test-otp-emails-with-playwright" class="section-block">
+            <h2>How to Test OTP Emails with Playwright</h2>
+            <p>
+              <a href="https://playwright.dev/" class="bold-red-link" target="_blank" rel="noopener">Playwright</a> is ideal for OTP testing because browser actions and API requests integrate natively in the same test workflow.
+            </p>
+            <pre class="code"><code class="language-javascript">import { test, expect } from '@playwright/test';
+
+test('user can verify email with an OTP', async ({ page }) => {
+  const inbox = await createTestInbox();
+  await page.goto(`${BASE_URL}/register`);
+  await page.fill('input[name="email"]', inbox.email);
+  await page.fill('input[name="password"]', process.env.TEST_PASSWORD);
+  await page.click('button[type="submit"]');
+
+  const message = await waitForEmail(inbox.id, inbox.token);
+  const otp = extractOtp(message.textBody || message.htmlBody || '');
+  if (!otp) {
+    throw new Error('OTP not found');
+  }
+
+  await page.fill('input[name="otpCode"]', otp);
+  await page.click('button[type="submit"]');
+  await expect(page).toHaveURL(/dashboard/);
+});</code></pre>
+            <p>
+              Keep mailbox creation, email retrieval, and OTP parsing in reusable helper modules to keep individual E2E tests clean and declarative.
+            </p>
+          </section>
+
+          <!-- ============ 09. HOW TO TEST WITH CYPRESS ============ -->
+          <section id="how-to-test-otp-emails-with-cypress" class="section-block">
+            <h2>How to Test OTP Emails with Cypress</h2>
+            <p>
+              In <a href="https://www.cypress.io/" class="bold-red-link" target="_blank" rel="noopener">Cypress</a>, use a custom command to interact with the Email API:
+            </p>
+            <pre class="code"><code class="language-javascript">Cypress.Commands.add('fetchOTP', (inboxId, token) => {
+  return cy.request({
+    method: 'GET',
+    url: `${Cypress.env('EMAIL_API_URL')}/inboxes/${inboxId}/messages`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }).then(response => {
+    const body = response.body[0]?.textBody || '';
+    const match = body.match(
+      /(?:verification code|otp|passcode)\s*(?:is|:|=)?\s*([0-9]{4,8})/i
+    );
+    if (!match) {
+      throw new Error('OTP not found');
+    }
+    return match[1];
+  });
+});</code></pre>
+          </section>
+
+          <!-- ============ 10. HOW TO TEST WITH SELENIUM ============ -->
+          <section id="how-to-test-otp-emails-with-selenium" class="section-block">
+            <h2>How to Test OTP Emails with Selenium</h2>
+            <p>
+              <a href="https://www.selenium.dev/" class="bold-red-link" target="_blank" rel="noopener">Selenium</a> controls the browser while a standard HTTP client (e.g., Python <code class="mono">requests</code>) handles email retrieval:
+            </p>
+            <pre class="code"><code class="language-python">import os
+import re
+import requests
+
+def fetch_otp(inbox_id, token):
+    response = requests.get(
+        f"{os.environ['EMAIL_API_URL']}/inboxes/{inbox_id}/messages",
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=15,
+    )
+    response.raise_for_status()
+    body = response.json()[0].get("textBody", "")
+    match = re.search(
+        r"(?:verification code|otp|passcode)\s*(?:is|:|=)?\s*([0-9]{4,8})",
+        body,
+        re.I,
+    )
+    if not match:
+        raise RuntimeError("OTP not found")
+    return match.group(1)</code></pre>
+          </section>
+
+          <!-- ============ 11. PARSING OTP EMAILS RELIABLY ============ -->
+          <section id="parsing-otp-emails-reliably" class="section-block">
+            <h2>Parsing OTP Emails Reliably</h2>
+            <p>
+              Email markup can contain tracking pixels, CSS rules, base64 images, and hidden elements. Searching raw HTML with a simple regular expression often yields false positives.
+            </p>
+            
+            <h3>Prefer Structured Selectors</h3>
+            <p>If you control your email templates, add a test attribute to the OTP container:</p>
+            <pre class="code"><code class="language-html">&lt;span data-testid="otp-code"&gt;482913&lt;/span&gt;</code></pre>
+            <p>
+              The test parser can query this exact DOM node, eliminating reliance on changing marketing copy.
+            </p>
+          </section>
+
+          <!-- ============ 12. PLAIN TEXT VS HTML EMAIL ============ -->
+          <section id="plain-text-vs-html-email" class="section-block">
+            <h2>Plain Text vs HTML Email</h2>
+            <p>
+              <strong>Plain Text:</strong> Clean and easy to parse with minimal regex ambiguity.
+            </p>
+            <pre class="code"><code class="language-text">Your verification code is 482913. This code expires in 10 minutes.</code></pre>
+
+            <p>
+              <strong>HTML:</strong> Rich formatting requires DOM parsing. Use <a href="https://cheerio.js.org/" class="bold-red-link" target="_blank" rel="noopener">Cheerio</a> for Node.js:
+            </p>
+            <pre class="code"><code class="language-javascript">import * as cheerio from 'cheerio';
+
+function extractOtpFromHtml(html) {
+  const $ = cheerio.load(html);
+  const explicit = $('.otp-code, #verification-code, [data-testid="otp-display"]')
+    .first()
+    .text()
+    .trim();
+  if (/^\d{4,8}$/.test(explicit)) {
+    return explicit;
+  }
+  return extractOtp($('body').text());
+}</code></pre>
+          </section>
+
+          <!-- ============ 13. MAGIC LINKS & LOCALIZATION ============ -->
+          <section id="testing-magic-links" class="section-block">
+            <h2>Testing Magic Links</h2>
+            <p>
+              For magic links, retrieve the email, extract the link, and always validate the target hostname before navigation:
+            </p>
+            <pre class="code"><code class="language-javascript">function extractMagicLink(body, host) {
+  const pattern = new RegExp(`https?://${host}/[^"\\s<]+`, 'i');
+  return body.match(pattern)?.[0] || null;
+}</code></pre>
+          </section>
+
+          <!-- ============ 14. EDGE CASES ============ -->
+          <section id="testing-edge-cases" class="section-block">
+            <h2>Testing Resend, Expiration &amp; Invalid OTPs</h2>
+            
+            <h3>1. Testing OTP Resend</h3>
+            <p>
+              Verify that clicking <em>Resend</em> issues a new OTP and invalidates the previous code:
+            </p>
+            <div class="flow-pipeline" style="background:var(--code-bg);color:var(--code-ink);border-radius:var(--radius-sm);padding:14px 18px;font-family:var(--font-mono);font-size:13.5px;overflow-x:auto;margin:16px 0;line-height:1.6;">
+              Request OTP A → Receive OTP A → Click Resend → Receive OTP B → Submit OTP B (Accepted) &amp; Submit OTP A (Rejected)
+            </div>
+
+            <h3>2. Testing OTP Expiration</h3>
+            <p>
+              Do not sleep for 10 minutes in CI. Use a staging environment variable or mock clock with a 2-second expiration window to validate rejection behavior.
+            </p>
+
+            <h3>3. Testing Invalid &amp; Reused OTPs</h3>
+            <p>
+              Submit an altered code (<code class="mono">otp + "1"</code>) and verify clear error messaging. Also test single-use enforcement: submitting the same correct OTP a second time must fail.
+            </p>
+          </section>
+
+          <!-- ============ 15. GITHUB ACTIONS & GITLAB CI ============ -->
+          <section id="how-to-run-otp-tests-in-github-actions" class="section-block">
+            <h2>How to Run OTP Tests in GitHub Actions &amp; GitLab CI</h2>
+            <p>Store API keys in CI secret vaults instead of committing them to code.</p>
+
+            <h3>GitHub Actions Workflow</h3>
+            <pre class="code"><code class="language-yaml">name: E2E OTP Tests
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  otp-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run OTP E2E tests
+        env:
+          BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+          EMAIL_API_URL: ${{ secrets.EMAIL_API_URL }}
+          EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        run: npx playwright test</code></pre>
+
+            <h3 id="how-to-run-otp-tests-in-gitlab-ci">GitLab CI Pipeline</h3>
+            <pre class="code"><code class="language-yaml">e2e_otp_tests:
+  stage: test
+  image: mcr.microsoft.com/playwright:v1.44.0-jammy
+  script:
+    - npm ci
+    - npx playwright test
+  variables:
+    BASE_URL: $STAGING_BASE_URL
+    EMAIL_API_URL: $EMAIL_API_URL
+    EMAIL_API_KEY: $EMAIL_API_KEY
+    TEST_PASSWORD: $TEST_PASSWORD
+  artifacts:
+    when: on_failure
+    paths:
+      - playwright-report/
+    expire_in: 7 days</code></pre>
+          </section>
+
+          <!-- ============ 16. PARALLEL CI COLLISIONS ============ -->
+          <section id="handling-otp-test-collisions-in-parallel-ci-jobs" class="section-block">
+            <h2>Handling OTP Test Collisions in Parallel CI Jobs</h2>
+            <p>
+              When running 4–8 parallel workers, each worker must have an isolated email namespace:
+            </p>
+            <pre class="code"><code class="language-javascript">const worker = process.env.TEST_WORKER_INDEX || "0";
+const build = process.env.CI_PIPELINE_ID || `${Date.now()}`;
+const email = `otp-${build}-worker-${worker}@sandbox.example.test`;</code></pre>
+          </section>
+
+          <!-- ============ 17. POLLING VS FIXED DELAYS ============ -->
+          <section id="polling-vs-fixed-delays" class="section-block">
+            <h2>Polling vs Fixed Delays</h2>
+            <p>
+              Avoid <code class="mono">await sleep(5000)</code>. If delivery takes 400ms, 4.6 seconds are wasted. If delivery takes 6 seconds, the test fails falsely.
+            </p>
+            <p>
+              Use bounded polling with exponential backoff or short intervals (300–500ms) with a 15-second total ceiling.
+            </p>
+          </section>
+
+          <!-- ============ 18. DEBUGGING & DIAGNOSTICS ============ -->
+          <section id="debugging-and-diagnostics" class="section-block">
+            <h2>Debugging &amp; Safe CI Diagnostics</h2>
+            <p>
+              When a test fails, provide clear contextual diagnostics without logging sensitive auth tokens:
+            </p>
+            <pre class="code"><code class="language-text">OTP email was not found.
+Inbox: ci-test-worker-2
+Recipient: redacted@sandbox.example.test
+Expected sender: staging-mail@example.com
+Elapsed time: 15 seconds</code></pre>
+            <p>
+              <strong>Never log:</strong> OTP codes, passwords, magic links, or bearer tokens in test reports or screenshots.
+            </p>
+          </section>
+
+          <!-- ============ 19. SECURITY & DATA CLEANUP ============ -->
+          <section id="security-and-data-cleanup" class="section-block">
+            <h2>Security and Data Cleanup</h2>
+            <ul>
+              <li><strong>CI Secrets:</strong> Store <code class="mono">EMAIL_API_KEY</code> and passwords in protected secret stores.</li>
+              <li><strong>Scoped Access:</strong> Use API tokens with permissions restricted solely to staging sandbox inboxes.</li>
+              <li><strong>Automatic Teardown:</strong> Delete test users and disposable inboxes in a <code class="mono">finally</code> block.</li>
+              <li><strong>Short TTL:</strong> Set mailbox retention to expire after 1 hour automatically.</li>
+            </ul>
+          </section>
+
+          <!-- ============ 20. EMAIL API VS IMAP VS MOCK SMTP ============ -->
+          <section id="email-api-vs-imap-vs-mock-smtp" class="section-block">
+            <h2>Email API vs IMAP vs Mock SMTP Comparison</h2>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>Best Use</th>
+                    <th>Advantages</th>
+                    <th>Trade-offs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong><a href="/email-api" class="bold-red-link">Email API</a></strong></td>
+                    <td>CI/CD E2E</td>
+                    <td>Programmatic access, isolated inboxes, webhooks</td>
+                    <td>External service dependency</td>
+                  </tr>
+                  <tr>
+                    <td><strong>IMAP</strong></td>
+                    <td>Corporate mail testing</td>
+                    <td>Validates real mail servers</td>
+                    <td>Complex setup, connection limits</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Mock SMTP</strong></td>
+                    <td>Local unit tests</td>
+                    <td>Ultra fast, zero external calls</td>
+                    <td>No real DNS/deliverability verification</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ============ 21. COMMON PROBLEMS AND FIXES ============ -->
+          <section id="common-otp-testing-problems-and-fixes" class="section-block">
+            <h2>Common OTP Testing Problems and Fixes</h2>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Problem</th>
+                    <th>Likely Cause</th>
+                    <th>Recommended Fix</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>OTP not found</strong></td>
+                    <td>Email still processing</td>
+                    <td>Use bounded polling helper with timeout</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Wrong OTP selected</strong></td>
+                    <td>Shared inbox between tests</td>
+                    <td>Assign a unique email per parallel worker</td>
+                  </tr>
+                  <tr>
+                    <td><strong>OTP expired</strong></td>
+                    <td>Runner slow or clock lag</td>
+                    <td>Shorten retrieval time; configure staging clock</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Parser matches wrong number</strong></td>
+                    <td>Raw HTML contains zip/order ID</td>
+                    <td>Use DOM parsing or labeled regex pattern</td>
+                  </tr>
+                  <tr>
+                    <td><strong>CI exposes credentials</strong></td>
+                    <td>Hardcoded secrets</td>
+                    <td>Move tokens to GitHub/GitLab Secrets</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Test hangs indefinitely</strong></td>
+                    <td>Missing retrieval timeout</td>
+                    <td>Enforce strict 15s max timeout on email fetch</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ============ 22. CI SETUP CHECKLIST ============ -->
+          <section id="a-simple-ci-checklist-for-otp-email-tests" class="section-block">
+            <h2>A Simple CI Checklist for OTP Email Tests</h2>
+            <ul style="list-style:none;padding-left:0;">
+              <li style="margin-bottom:8px;">✅ Is the test executing against staging or sandbox mail infrastructure?</li>
+              <li style="margin-bottom:8px;">✅ Does every parallel worker generate a unique email address?</li>
+              <li style="margin-bottom:8px;">✅ Are Email API tokens stored exclusively in CI secrets?</li>
+              <li style="margin-bottom:8px;">✅ Does the email retrieval helper enforce a strict timeout?</li>
+              <li style="margin-bottom:8px;">✅ Does the parser reliably target the OTP code element?</li>
+              <li style="margin-bottom:8px;">✅ Are raw OTP values and magic links excluded from CI logs?</li>
+              <li style="margin-bottom:8px;">✅ Are temporary inboxes and test users purged in teardown?</li>
+              <li style="margin-bottom:8px;">✅ Does the final assertion verify full dashboard authentication?</li>
+            </ul>
+          </section>
+
+          <!-- ============ 23. FAQS ============ -->
+          <section id="frequently-asked-questions" class="section-block">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-list" style="margin-top:20px;">
+              <details class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:12px;padding:16px;">
+                <summary style="font-weight:700;cursor:pointer;color:var(--ink-heading);font-size:16px;">What is OTP email testing?</summary>
+                <p style="margin-top:12px;margin-bottom:0;color:var(--muted);">
+                  OTP email testing verifies that an application generates, delivers, retrieves, and accepts a one-time password sent by email. Automated testing ensures every deployment validates the complete authentication flow.
+                </p>
+              </details>
+
+              <details class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:12px;padding:16px;">
+                <summary style="font-weight:700;cursor:pointer;color:var(--ink-heading);font-size:16px;">How do you automate OTP verification?</summary>
+                <p style="margin-top:12px;margin-bottom:0;color:var(--muted);">
+                  Create an isolated test inbox, trigger the OTP flow, retrieve the email through an <a href="/email-api" class="bold-red-link">Email API</a> or controlled mailbox, extract the code, submit it in the browser, and verify the resulting application state.
+                </p>
+              </details>
+
+              <details class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:12px;padding:16px;">
+                <summary style="font-weight:700;cursor:pointer;color:var(--ink-heading);font-size:16px;">Can you test OTP emails without Gmail?</summary>
+                <p style="margin-top:12px;margin-bottom:0;color:var(--muted);">
+                  Yes. You can use dedicated <a href="/email-api" class="bold-red-link">Email APIs</a>, temporary test inboxes, mock SMTP, corporate IMAP mailboxes, or webhook-based delivery. A personal Gmail account is not required.
+                </p>
+              </details>
+
+              <details class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:12px;padding:16px;">
+                <summary style="font-weight:700;cursor:pointer;color:var(--ink-heading);font-size:16px;">How do you prevent OTP tests from interfering with each other?</summary>
+                <p style="margin-top:12px;margin-bottom:0;color:var(--muted);">
+                  Give each test worker or test run a unique email address or mailbox namespace. Never share a single static inbox across parallel CI workers.
+                </p>
+              </details>
+
+              <details class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:12px;padding:16px;">
+                <summary style="font-weight:700;cursor:pointer;color:var(--ink-heading);font-size:16px;">How do you test magic links?</summary>
+                <p style="margin-top:12px;margin-bottom:0;color:var(--muted);">
+                  Retrieve the email, extract the application URL, validate the expected domain, open the link in the browser test, and verify the authenticated state.
+                </p>
+              </details>
+            </div>
+          </section>
+
+          <!-- ============ 24. RELATED READING ============ -->
+          <section id="related-reading" class="section-block" style="margin-top:48px;">
+            <h3 style="font-size:20px;font-weight:800;letter-spacing:-0.01em;margin-bottom:20px;">
+              Related Reading
+            </h3>
+            <div class="related-grid">
+              <a href="/blog/migrate-from-formspree" class="related-card">
+                <div class="related-card-meta mono">Migration Guide</div>
+                <h4 class="related-card-title"><span class="bold-red-link">Formspree migration guide</span> — a practical guide to moving from legacy form backends to developer APIs.</h4>
+              </a>
+              <a href="/blog/formspree-alternative" class="related-card">
+                <div class="related-card-meta mono">Developer Alternatives</div>
+                <h4 class="related-card-title"><span class="bold-red-link">Formspree alternative for developers and AI agents</span> — patterns for structured API-driven automation.</h4>
+              </a>
+              <a href="/" class="related-card">
+                <div class="related-card-meta mono">OllaStack Product</div>
+                <h4 class="related-card-title"><span class="bold-red-link">OllaStack form backend features</span> — developer features for form submission, email notification, and automated validation.</h4>
+              </a>
+              <a href="/blog/can-ai-agents-submit-forms-safely" class="related-card">
+                <div class="related-card-meta mono">Security Guide</div>
+                <h4 class="related-card-title"><span class="bold-red-link">Zero-trust forms infrastructure guide</span> — security and authorization patterns for web submissions.</h4>
+              </a>
+            </div>
+          </section>
+
+        </article>
+
+        <!-- Right Column: Ollastack Promo Card -->
+        <aside class="right-sidebar">
+          <div class="sidebar-promo-card">
+            <div class="promo-brand mono">OLLASTACK</div>
+            <p class="promo-desc">A form backend &amp; email API built for developers — and the CI pipelines &amp; AI agents running at scale.</p>
+            <a href="https://login.ollastack.com/register" class="btn-promo">Start free →</a>
+            <div class="promo-meta mono">No credit card · 50 submissions/mo</div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container-wide">
+      <div class="foot-grid">
+        <div>
+          <a href="/" aria-label="ollastack" class="logo-lockup">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="logo-mark">
+              <rect x="2" y="2" width="20" height="20" rx="4" fill="#DA291C"></rect>
+              <rect x="6" y="7" width="12" height="2" rx="1" fill="#ffffff"></rect>
+              <rect x="6" y="11" width="12" height="2" rx="1" fill="#ffffff"></rect>
+              <rect x="6" y="15" width="12" height="2" rx="1" fill="#ffffff"></rect>
+            </svg>
+            <span class="wordmark">ollastack</span>
+          </a>
+          <p class="tagline">The message layer for AI agents — forms in, email out, tested in CI. One API.</p>
+        </div>
+        <div>
+          <div class="foot-group-title mono">Product</div>
+          <ul class="foot-links">
+            <li><a href="/">Overview</a></li>
+            <li><a href="/email-api">Email API</a></li>
+            <li><a href="/pricing">Pricing</a></li>
+            <li><a href="/docs#quickstart">Quickstart</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="foot-group-title mono">Resources</div>
+          <ul class="foot-links">
+            <li><a href="/resources">All guides</a></li>
+            <li><a href="/resources/migration-hub">Migration hub</a></li>
+            <li><a href="/resources/developer-hub">Developer hub</a></li>
+            <li><a href="/resources/deliverability-hub">Deliverability hub</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="foot-group-title mono">Developers</div>
+          <ul class="foot-links">
+            <li><a href="/docs">Docs</a></li>
+            <li><a href="/docs/agents">For AI agents</a></li>
+            <li><a href="https://login.ollastack.com/api/openapi.json">OpenAPI spec</a></li>
+            <li><a href="/docs#webhooks">Webhooks</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="foot-group-title mono">Company</div>
+          <ul class="foot-links">
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/careers">Careers</a></li>
+            <li><a href="/docs/smtp">Custom SMTP</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="foot-bottom mono">
+        <span>© 2026 Ollastack — an Ollasoftware Solutions company</span>
+        <span>Keerthi SB (keerthishankar68-sb)</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/main.js"></script>
+</body>
+</html>

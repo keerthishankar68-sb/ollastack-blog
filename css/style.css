@@ -492,6 +492,26 @@ a:hover {
   font-weight: 600;
 }
 
+.article-content a,
+.article-body a,
+.content-link,
+a.bold-red-link {
+  color: #DA291C !important;
+  font-weight: 700 !important;
+  text-decoration: underline;
+  text-decoration-color: rgba(218, 41, 28, 0.4);
+  text-underline-offset: 3px;
+  transition: all 0.2s ease;
+}
+
+.article-content a:hover,
+.article-body a:hover,
+.content-link:hover,
+a.bold-red-link:hover {
+  color: #b91c1c !important;
+  text-decoration-color: #b91c1c;
+}
+
 .article-content hr {
   border: 0;
   height: 1px;
@@ -499,27 +519,27 @@ a:hover {
   margin: 48px 0;
 }
 
-/* Callout Box - Key Takeaways */
+/* Callout Box - Key Takeaways (Bold Red Accent) */
 .takeaways-box {
-  background: var(--bg-card);
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--accent);
+  background: #fff8f8;
+  border: 1px solid rgba(218, 41, 28, 0.25);
+  border-left: 5px solid #DA291C;
   border-radius: var(--radius-md);
-  padding: 24px 28px;
+  padding: 26px 30px;
   margin: 32px 0 40px 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  box-shadow: 0 4px 16px rgba(218, 41, 28, 0.05);
 }
 
 .takeaways-title {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--accent);
-  margin: 0 0 14px 0;
+  letter-spacing: 0.06em;
+  color: #DA291C;
+  margin: 0 0 16px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .takeaways-list {
@@ -530,18 +550,25 @@ a:hover {
 
 .takeaways-list li {
   position: relative;
-  padding-left: 22px;
-  margin-bottom: 10px;
+  padding-left: 24px;
+  margin-bottom: 12px;
   color: var(--ink);
-  font-weight: 500;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.takeaways-list li strong {
+  color: #DA291C;
+  font-weight: 800;
 }
 
 .takeaways-list li::before {
   content: "•";
   position: absolute;
   left: 6px;
-  color: var(--accent);
-  font-size: 18px;
+  color: #DA291C;
+  font-size: 22px;
+  font-weight: 900;
   line-height: 1;
 }
 
